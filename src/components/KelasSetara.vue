@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+// Import data silabus master
+import { informatikaSyllabusData } from '../data/informatika.js'
 
 // Data Kategori
 const categories = [
@@ -18,11 +20,12 @@ const courses = ref([
     title: 'Informatika SMK',
     category: 'Materi SMK',
     description: 'Konsep dasar informatika, pemikiran komputasional, serta praktik dasar pemrograman untuk siswa SMK.',
-    lessonsCount: 12,
+    syllabus: informatikaSyllabusData,
     level: 'Pemula',
     tag: 'SPBN Bekasi',
     icon: '💻',
-    link: '/ruang-belajar/'
+    link: '/ruang-belajar/',
+    practiceLink: '#'
   },
   {
     id: 2,
@@ -43,10 +46,12 @@ const courses = ref([
     category: 'Software Engineering',
     description: 'Belajar fondasi pembuatan web modern menggunakan HTML, CSS, JavaScript, dan framework interaktif.',
     lessonsCount: 15,
+    practiceCount: 0,
     level: 'Pemula - Menengah',
     tag: 'Umum',
     icon: '🌐',
-    link: '#'
+    link: '#',
+    practiceLink: '#'
   },
   {
     id: 4,
@@ -54,10 +59,12 @@ const courses = ref([
     category: 'Software Engineering',
     description: 'Arsitektur REST API, manajemen basis data, dan pembuatan layanan backend yang scalable.',
     lessonsCount: 10,
+    practiceCount: 0,
     level: 'Menengah',
     tag: 'Umum',
     icon: '⚙️',
-    link: '#'
+    link: '#',
+    practiceLink: '#'
   },
   {
     id: 5,
@@ -65,20 +72,54 @@ const courses = ref([
     category: 'Quality Assurance',
     description: 'Prinsip pengujian perangkat lunak, manual testing, penyusunan test case, dan otomatisasi pengujian.',
     lessonsCount: 9,
+    practiceCount: 0,
     level: 'Semua Tingkat',
     tag: 'Umum',
     icon: '🧪',
-    link: '#'
+    link: '#',
+    practiceLink: '#'
   }
 ])
 
-// Filter Kartu Berdasarkan Kategori
-const filteredCourses = computed(() => {
-  if (selectedCategory.value === 'Semua') {
-    return courses.value
-  }
-  return courses.value.filter(course => course.category === selectedCategory.value)
+// Filter Kartu Berdasarkan Kategori & Hitung Modul Secara Dinamis
+const displayCourses = computed(() => {
+  // 1. Filter kategori
+  let activeCourses = selectedCategory.value === 'Semua' 
+    ? courses.value 
+    : courses.value.filter(course => course.category === selectedCategory.value)
+
+  // 2. Kalkulasi dinamis
+  return activeCourses.map(course => {
+    if (course.syllabus) {
+      let theoryCount = 0
+      let practiceCount = 0
+
+      course.syllabus.forEach(mod => {
+        mod.lessons.forEach(lesson => {
+          if (lesson.type === 'theory') {
+            theoryCount++
+          } else if (['practice', 'challenge', 'project', 'sumative'].includes(lesson.type)) {
+            practiceCount++
+          }
+        })
+      })
+
+      // Timpa angka dengan hasil kalkulasi
+      return { ...course, lessonsCount: theoryCount, practiceCount: practiceCount }
+    }
+    
+    // Jika tidak punya array syllabus (mapel G-Drive), kembalikan data apa adanya
+    return course
+  })
 })
+
+// // Filter Kartu Berdasarkan Kategori
+// const filteredCourses = computed(() => {
+//   if (selectedCategory.value === 'Semua') {
+//     return courses.value
+//   }
+//   return courses.value.filter(course => course.category === selectedCategory.value)
+// })
 </script>
 
 <template>
@@ -118,7 +159,7 @@ const filteredCourses = computed(() => {
       <!-- Course Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="course in filteredCourses"
+          v-for="course in displayCourses"
           :key="course.id"
           class="group relative bg-white/70 backdrop-blur-md border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
         >
@@ -142,17 +183,27 @@ const filteredCourses = computed(() => {
             </p>
           </div>
 
-          <!-- Footer Kartu -->
+          <!-- Footer Kartu (Perbaikan Tata Letak) -->
           <div>
             <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-4 mb-4">
-              <span>📚 {{ course.lessonsCount }} Modul</span>
-              <a :href="course.practiceLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-              >
-                <span>🤺 {{ course.practiceCount }} Latihan</span>
-              </a>
-              <span>🎯 {{ course.level }}</span>
+              
+              <!-- Bungkus Modul & Latihan di dalam satu div agar rata kiri bersamaan -->
+              <div class="flex items-center gap-4">
+                <span>📚 {{ course.lessonsCount }} Modul</span>
+                <!-- Hilangkan a tag jika practiceLink '#' agar tidak terlihat seperti link patah -->
+                <a v-if="course.practiceLink !== '#'"
+                    :href="course.practiceLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="hover:text-indigo-600 transition-colors"
+                >
+                  <span>🤺 {{ course.practiceCount }} Latihan</span>
+                </a>
+                <span v-else>🤺 {{ course.practiceCount }} Latihan</span>
+              </div>
+
+              <!-- Level otomatis terdorong ke paling kanan karena justify-between -->
+              <span class="shrink-0 text-right font-medium">🎯 {{ course.level }}</span>
             </div>
 
             <a 
