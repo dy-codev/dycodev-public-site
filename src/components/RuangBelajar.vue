@@ -7,7 +7,7 @@ import { backendSyllabusData } from '../data/backend.js'
 
 // 1. Baca parameter 'subject' dari URL (misal: ?subject=backend)
 const urlParams = new URLSearchParams(window.location.search)
-const subjectKey = urlParams.get('subject') || 'informatika' // default ke informatika jika kosong
+const subjectKey = urlParams.get('subject') || 'unknown' // default ke informatika jika kosong
 
 // 2. Kamus untuk menentukan data dan key storage berdasarkan URL
 const coursesDB = {
@@ -31,7 +31,15 @@ const coursesDB = {
 }
 
 // Ambil konfigurasi yang sesuai dengan URL saat ini
-const activeCourse = coursesDB[subjectKey] || coursesDB.informatika
+const activeCourse = coursesDB[subjectKey] || {
+  // 3. Tangani jika subject belum ada di database
+  title: subjectKey ? subjectKey.toUpperCase() + ' - Segera Hadir' : 'Materi Pembelajaran',
+  badge: 'Dalam Pengembangan',
+  totalJP: 0,
+  totalMeetings: 0,
+  storageKey: `dycodev_lms_empty_${subjectKey}`,
+  syllabus: [] // Kosong, menandakan belum ada materi
+}
 const STORAGE_KEY = activeCourse.storageKey
 
 // Metadata Subject sekarang dinamis mengikuti URL!
@@ -41,8 +49,6 @@ const subjectMeta = ref({
   totalJP: activeCourse.totalJP,
   totalMeetings: activeCourse.totalMeetings
 })
-
-// const STORAGE_KEY = 'dycodev_lms_progress_python'
 
 // Fungsi untuk memuat data awal silabus sekaligus menggabungkannya dengan Local Storage
 const getInitialSyllabus = () => {
@@ -277,167 +283,186 @@ const completionButtonText = computed(() => {
     <!-- Main Workspace -->
     <div class="flex flex-1 overflow-hidden">
 
-      <!-- Overlay Gelap (Hanya muncul saat drawer mobile terbuka) -->
-      <div 
-        v-show="isDrawerOpen" 
-        @click="isDrawerOpen = false"
-        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
-      ></div>
-      
-      <!-- Sidebar / Silabus (Kiri) -->
-      <aside 
-        :class="[
-          'w-[85vw] sm:w-80 lg:w-96 bg-white/95 md:bg-white/40 backdrop-blur-xl border-r border-slate-200/60 flex flex-col shrink-0 overflow-y-auto',
-          'fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 transition-transform duration-300 ease-in-out',
-          isDrawerOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
-        ]"
-      >
-        <div class="p-5 border-b border-slate-200/60 flex items-center justify-between">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Silabus Pembelajaran</h2>
-          
-          <!-- Tombol Tutup (X) Drawer - Hanya muncul di mobile -->
-          <button @click="isDrawerOpen = false" class="md:hidden text-slate-400 hover:text-red-500 transition-colors p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+      <!-- JIKA SILABUS KOSONG / BELUM DISUSUN -->
+      <div v-if="activeCourse.syllabus.length === 0" class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="max-w-md bg-white/80 backdrop-blur-md border border-slate-200 rounded-3xl p-8 shadow-sm">
+          <span class="text-5xl mb-4 block">🚧</span>
+          <h2 class="text-2xl font-bold text-slate-900 mb-2">Materi Belum Disusun</h2>
+          <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+            Modul pembelajaran untuk mata pelajaran <strong class="text-slate-900">{{ activeCourse.title }}</strong> sedang dalam tahap penyusunan kurikulum oleh instruktur. Silakan kembali lagi nanti!
+          </p>
+          <a href="/kelas-setara/" class="px-5 py-2.5 bg-slate-900 hover:bg-indigo-600 text-white font-medium text-sm rounded-xl transition-colors duration-200 inline-flex items-center gap-2">
+            Kembali ke Daftar Kelas
+          </a>
         </div>
+      </div>
+
+      <!-- JIKA SILABUS ADA (TAMPILAN NORMAL SEPERTI BIASA) -->
+      <template v-else>
         
-        <div class="p-3 flex flex-col gap-2">
-          <!-- Accordion Modul -->
-          <div v-for="mod in syllabus" :key="mod.id" class="mb-2">
-            <button 
-              @click="toggleModule(mod.id)" 
-              class="w-full flex items-center justify-between p-3 bg-white/60 rounded-xl hover:bg-white border border-slate-100 transition-colors text-left"
-            >
-              <span class="font-semibold text-slate-800 text-sm">{{ mod.title }}</span>
-              <svg :class="{'rotate-180': mod.isOpen}" class="w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        <!-- Overlay Gelap (Hanya muncul saat drawer mobile terbuka) -->
+        <div 
+          v-show="isDrawerOpen" 
+          @click="isDrawerOpen = false"
+          class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+          >
+        </div>
+      
+        <!-- Sidebar / Silabus (Kiri) -->
+        <aside 
+          :class="[
+            'w-[85vw] sm:w-80 lg:w-96 bg-white/95 md:bg-white/40 backdrop-blur-xl border-r border-slate-200/60 flex flex-col shrink-0 overflow-y-auto',
+            'fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 transition-transform duration-300 ease-in-out',
+            isDrawerOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+          ]"
+          >
+          <div class="p-5 border-b border-slate-200/60 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Silabus Pembelajaran</h2>
+          
+            <!-- Tombol Tutup (X) Drawer - Hanya muncul di mobile -->
+            <button @click="isDrawerOpen = false" class="md:hidden text-slate-400 hover:text-red-500 transition-colors p-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            
-            <!-- List TP / Sub-materi -->
-            <div v-show="mod.isOpen" class="mt-2 pl-4 pr-2 flex flex-col gap-1 border-l-2 border-indigo-100 ml-5">
+          </div>
+        
+          <div class="p-3 flex flex-col gap-2">
+            <!-- Accordion Modul -->
+            <div v-for="mod in syllabus" :key="mod.id" class="mb-2">
               <button 
-                v-for="lesson in mod.lessons" :key="lesson.id"
-                @click="navigateTo(lesson.id)"
-                :class="[ 
-                  'flex items-start gap-3 p-2.5 rounded-lg text-left text-sm transition-all',
-                  activeLesson === lesson.id ? 'bg-indigo-50 text-indigo-700 font-medium' : 'hover:bg-slate-100/50 text-slate-600'
-                ]"
-              >
-                <!-- Ikon Status/Tipe -->
-                <span class="mt-0.5 shrink-0">
-                  <svg v-if="lesson.isCompleted" class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span v-else-if="lesson.type === 'theory'" class="text-slate-400">📖</span>
-                  <span v-else-if="lesson.type === 'challenge' || lesson.type === 'practice'" class="text-orange-400">⚡</span>
-                  <span v-else-if="lesson.type === 'project'" class="text-indigo-500">🎯</span>
-                </span>
-                
-                <div class="flex flex-col">
-                  <span>{{ lesson.title }}</span>
-                  <span class="text-[10px] text-slate-400 mt-1 uppercase">{{ lesson.duration }} • {{ lesson.type }}</span>
-                </div>
+                @click="toggleModule(mod.id)" 
+                class="w-full flex items-center justify-between p-3 bg-white/60 rounded-xl hover:bg-white border border-slate-100 transition-colors text-left"
+                >
+                <span class="font-semibold text-slate-800 text-sm">{{ mod.title }}</span>
+                <svg :class="{'rotate-180': mod.isOpen}" class="w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- Area Konten (Kanan) -->
-      <main class="flex-1 overflow-y-auto p-6 md:p-10">
-        <!-- Render pesan jika data materi kosong -->
-        <div v-if="!syllabus || syllabus.length === 0" class="max-w-4xl mx-auto text-center py-20">
-          <h2 class="text-2xl font-bold text-slate-600">Konten Belum Tersedia</h2>
-          <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
-        </div>
-
-        <div class="max-w-4xl mx-auto">  
-          <!-- Header Konten Aktif -->
-          <div class="mb-8 pb-6 border-b border-slate-200">
-            <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
-              {{ currentLessonData.moduleTitle.split(':')[0] }} • {{ currentLessonData.type }}
-            </div>
-            <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">
-              {{ currentLessonData.title }}
-            </h2>
-            <p class="text-slate-600 text-lg leading-relaxed">
-              {{ lessonBrief }}
-            </p>
-          </div>
-
-          <!-- Simulasi Konten Markdown / Video -->
-          <div class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
             
-            <!-- Tempat Video (Otomatis memutar YouTube jika URL tersedia) -->
-            <div v-if="currentLessonData.videoUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
-              <iframe 
-                class="w-full h-full"
-                :src="getEmbedUrl(currentLessonData.videoUrl)" 
-                title="Video Materi Pembelajaran" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen>
-              </iframe>
+              <!-- List TP / Sub-materi -->
+              <div v-show="mod.isOpen" class="mt-2 pl-4 pr-2 flex flex-col gap-1 border-l-2 border-indigo-100 ml-5">
+                <button 
+                  v-for="lesson in mod.lessons" :key="lesson.id"
+                  @click="navigateTo(lesson.id)"
+                  :class="[ 
+                    'flex items-start gap-3 p-2.5 rounded-lg text-left text-sm transition-all',
+                    activeLesson === lesson.id ? 'bg-indigo-50 text-indigo-700 font-medium' : 'hover:bg-slate-100/50 text-slate-600'
+                  ]"
+                  >
+                  <!-- Ikon Status/Tipe -->
+                  <span class="mt-0.5 shrink-0">
+                    <svg v-if="lesson.isCompleted" class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span v-else-if="lesson.type === 'theory'" class="text-slate-400">📖</span>
+                    <span v-else-if="lesson.type === 'challenge' || lesson.type === 'practice'" class="text-orange-400">⚡</span>
+                    <span v-else-if="lesson.type === 'project'" class="text-indigo-500">🎯</span>
+                  </span>
+                
+                  <div class="flex flex-col">
+                    <span>{{ lesson.title }}</span>
+                    <span class="text-[10px] text-slate-400 mt-1 uppercase">{{ lesson.duration }} • {{ lesson.type }}</span>
+                  </div>
+                </button>
+              </div>
             </div>
+          </div>
+        </aside>
 
-            <!-- Konten Materi yang Di-render dari Data -->
-            <div v-html="currentLessonData.content"></div>
-
+        <!-- Area Konten (Kanan) -->
+        <main class="flex-1 overflow-y-auto p-6 md:p-10">
+          <!-- Render pesan jika data materi kosong -->
+          <div v-if="!syllabus || syllabus.length === 0" class="max-w-4xl mx-auto text-center py-20">
+            <h2 class="text-2xl font-bold text-slate-600">Konten Belum Tersedia</h2>
+            <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
           </div>
 
-          <!-- Navigasi Bawah (Prev/Next) -->
-          <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-            
-            <!-- Tombol Sebelumnya -->
-            <button
-              v-if="prevLesson"
-              @click="navigateTo(prevLesson.id)"
-              class="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors flex items-center justify-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-              Sebelumnya
-            </button>
-            <div v-else></div> <!-- Spacer agar layout tetap seimbang -->
+          <div class="max-w-4xl mx-auto">  
+            <!-- Header Konten Aktif -->
+            <div class="mb-8 pb-6 border-b border-slate-200">
+              <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
+                {{ currentLessonData.moduleTitle.split(':')[0] }} • {{ currentLessonData.type }}
+              </div>
+              <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">
+                {{ currentLessonData.title }}
+              </h2>
+              <p class="text-slate-600 text-lg leading-relaxed">
+                {{ lessonBrief }}
+              </p>
+            </div>
 
-            <!-- Tombol Aksi: Tandai Paham / Belum Paham (Bisa Rollback) -->
-            <button
-              @click="toggleComplete"
-              :class="[
-                'w-full sm:w-auto px-6 py-2.5 text-sm font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2',
-                currentLessonData.isCompleted 
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20' 
-                  : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200'
-              ]"
-            >
-              <svg v-if="currentLessonData.isCompleted" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            <!-- Simulasi Konten Markdown / Video -->
+            <div class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
+            
+              <!-- Tempat Video (Otomatis memutar YouTube jika URL tersedia) -->
+              <div v-if="currentLessonData.videoUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
+                <iframe 
+                  class="w-full h-full"
+                  :src="getEmbedUrl(currentLessonData.videoUrl)" 
+                  title="Video Materi Pembelajaran" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen>
+                </iframe>
+              </div>
+
+              <!-- Konten Materi yang Di-render dari Data -->
+              <div v-html="currentLessonData.content"></div>
+
+            </div>
+
+            <!-- Navigasi Bawah (Prev/Next) -->
+            <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+              <!-- Tombol Sebelumnya -->
+              <button
+                v-if="prevLesson"
+                @click="navigateTo(prevLesson.id)"
+                class="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors flex items-center justify-center gap-2"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                Sebelumnya
+              </button>
+              <div v-else></div> <!-- Spacer agar layout tetap seimbang -->
+
+              <!-- Tombol Aksi: Tandai Paham / Belum Paham (Bisa Rollback) -->
+              <button
+                @click="toggleComplete"
+                :class="[
+                  'w-full sm:w-auto px-6 py-2.5 text-sm font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2',
+                  currentLessonData.isCompleted 
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20' 
+                    : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200'
+                ]"
+                >
+                <svg v-if="currentLessonData.isCompleted" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               
-              {{ completionButtonText }}
-            </button>
+                {{ completionButtonText }}
+              </button>
 
-            <!-- Tombol Lanjut (Hanya melihat materi berikutnya) -->
-            <button
-              v-if="nextLesson"
-              @click="navigateTo(nextLesson.id)"
-              class="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm flex items-center justify-center gap-2"
-            >
-              Lanjut
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-            </button>
-            <div v-else></div>
+              <!-- Tombol Lanjut (Hanya melihat materi berikutnya) -->
+              <button
+                v-if="nextLesson"
+                @click="navigateTo(nextLesson.id)"
+                class="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-xl hover:bg-indigo-600 transition-colors shadow-sm flex items-center justify-center gap-2"
+                >
+                Lanjut
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </button>
+              <div v-else></div>
 
+            </div>
           </div>
+        </main>
 
-        </div>
-      </main>
+      </template>
 
     </div>
   </div>
