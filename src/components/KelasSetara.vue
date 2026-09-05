@@ -44,7 +44,7 @@ const courses = ref([
     description: 'Belajar fondasi pembuatan web modern menggunakan HTML, CSS, JavaScript, dan framework interaktif.',
     lessonsCount: 15,
     level: 'Pemula - Menengah',
-    tag: 'Industri',
+    tag: 'Umum',
     icon: '🌐',
     link: '#'
   },
@@ -55,7 +55,7 @@ const courses = ref([
     description: 'Arsitektur REST API, manajemen basis data, dan pembuatan layanan backend yang scalable.',
     lessonsCount: 10,
     level: 'Menengah',
-    tag: 'Industri',
+    tag: 'Umum',
     icon: '⚙️',
     link: '#'
   },
@@ -66,7 +66,7 @@ const courses = ref([
     description: 'Prinsip pengujian perangkat lunak, manual testing, penyusunan test case, dan otomatisasi pengujian.',
     lessonsCount: 9,
     level: 'Semua Tingkat',
-    tag: 'Industri',
+    tag: 'Umum',
     icon: '🧪',
     link: '#'
   }

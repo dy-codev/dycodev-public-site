@@ -227,7 +227,7 @@ const getEmbedUrl = (url) => {
   <div class="min-h-screen bg-[#eef2f5] text-slate-800 font-sans flex flex-col h-screen">
     
     <!-- Topbar Navigation -->
-    <header class="bg-white/70 backdrop-blur-md border-b border-white/80 px-6 py-4 flex items-center justify-between shrink-0 z-10 sticky top-0">
+    <!-- <header class="bg-white/70 backdrop-blur-md border-b border-white/80 px-6 py-4 flex items-center justify-between shrink-0 z-10 sticky top-0">
       <div class="flex items-center gap-4">
         <a href="/kelas-setara/" class="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-2 text-sm font-medium">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -237,10 +237,10 @@ const getEmbedUrl = (url) => {
         </a>
         <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
         <h1 class="font-bold text-slate-900 hidden md:block">{{ subjectMeta.title }}</h1>
-      </div>
+      </div> -->
       
       <!-- Metadata / Progress -->
-      <div class="flex items-center gap-4 text-xs font-medium">
+      <!-- <div class="flex items-center gap-4 text-xs font-medium">
         <span class="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100/50">
           ⏱️ {{ subjectMeta.totalMeetings }} Pertemuan ({{ subjectMeta.totalJP }} JP)
         </span>
@@ -251,6 +251,42 @@ const getEmbedUrl = (url) => {
           </div>
           <span class="text-slate-700">{{ calculatedProgress }}%</span>
         </div>
+      </div>
+    </header> -->
+    <!-- Topbar Navigation -->
+    <header class="bg-white/70 backdrop-blur-md border-b border-white/80 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between shrink-0 z-10 sticky top-0 relative">
+      <div class="flex items-center gap-2 sm:gap-4">
+        <!-- Tombol Kembali yang menyesuaikan lebar layar -->
+        <a href="/kelas-setara/" class="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span class="hidden sm:inline">Kembali ke Kelas</span>
+          <span class="sm:hidden">Kembali</span>
+        </a>
+        <div class="h-6 w-px bg-slate-200 hidden md:block"></div>
+        <h1 class="font-bold text-slate-900 hidden md:block">{{ subjectMeta.title }}</h1>
+      </div>
+      
+      <!-- Metadata / Progress Desktop -->
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <!-- Memendekkan teks metadata di mobile agar rapi -->
+        <span class="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100/50">
+          <span class="hidden sm:inline">⏱️ {{ subjectMeta.totalMeetings }} Pertemuan ({{ subjectMeta.totalJP }} JP)</span>
+          <span class="sm:hidden shrink-0">⏱️ {{ subjectMeta.totalJP }} JP</span>
+        </span>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="text-slate-500">Progress:</span>
+          <div class="w-24 h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-indigo-500 rounded-full transition-all duration-300" :style="`width: ${calculatedProgress}%`"></div>
+          </div>
+          <span class="text-slate-700">{{ calculatedProgress }}%</span>
+        </div>
+      </div>
+
+      <!-- Garis Progress Mobile (Fullwidth persis di atas konten) -->
+      <div class="absolute bottom-0 left-0 w-full h-[3px] bg-slate-200/50 sm:hidden">
+        <div class="h-full bg-indigo-500 transition-all duration-300" :style="`width: ${calculatedProgress}%`"></div>
       </div>
     </header>
 
