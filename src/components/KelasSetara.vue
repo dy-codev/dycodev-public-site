@@ -88,13 +88,13 @@ const filteredCourses = computed(() => {
       <!-- Header Section -->
       <header class="mb-12 text-center md:text-left">
         <div class="inline-block px-3 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-100 rounded-full">
-          LMS Statis & Sharing Hub
+          Knowledge For All
         </div>
         <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
           Kelas <span class="text-indigo-600">Setara</span>
         </h1>
         <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">
-          Wadah berbagi pengetahuan praktis industri software engineering serta materi pembelajaran Informatika & Gambar Teknik SMK.
+          Ruang belajar terbuka untuk berbagi pengetahuan dan pengalaman, karena setiap orang berhak mendapatkan kesempatan untuk belajar.
         </p>
       </header>
 
