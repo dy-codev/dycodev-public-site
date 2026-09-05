@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
+import { backendSyllabusData } from '../data/backend.js'
 
 // Data Kategori
 const categories = [
@@ -24,7 +25,7 @@ const courses = ref([
     level: 'Pemula',
     tag: 'SPBN Bekasi',
     icon: '💻',
-    link: '/ruang-belajar/',
+    link: '/ruang-belajar/?subject=informatika',
     practiceLink: '#'
   },
   {
@@ -50,7 +51,7 @@ const courses = ref([
     level: 'Pemula - Menengah',
     tag: 'Umum',
     icon: '🌐',
-    link: '#',
+    link: '/ruang-belajar/?subject=webdev',
     practiceLink: '#'
   },
   {
@@ -58,12 +59,11 @@ const courses = ref([
     title: 'Backend Engineering',
     category: 'Software Engineering',
     description: 'Arsitektur REST API, manajemen basis data, dan pembuatan layanan backend yang scalable.',
-    lessonsCount: 10,
-    practiceCount: 0,
+    syllabus: backendSyllabusData,
     level: 'Menengah',
     tag: 'Umum',
     icon: '⚙️',
-    link: '#',
+    link: '/ruang-belajar/?subject=backend',
     practiceLink: '#'
   },
   {
@@ -71,12 +71,12 @@ const courses = ref([
     title: 'Software Quality Assurance',
     category: 'Quality Assurance',
     description: 'Prinsip pengujian perangkat lunak, manual testing, penyusunan test case, dan otomatisasi pengujian.',
-    lessonsCount: 9,
+    lessonsCount: 0,
     practiceCount: 0,
     level: 'Semua Tingkat',
     tag: 'Umum',
     icon: '🧪',
-    link: '#',
+    link: '/ruang-belajar/?subject=sqa',
     practiceLink: '#'
   }
 ])
@@ -112,14 +112,6 @@ const displayCourses = computed(() => {
     return course
   })
 })
-
-// // Filter Kartu Berdasarkan Kategori
-// const filteredCourses = computed(() => {
-//   if (selectedCategory.value === 'Semua') {
-//     return courses.value
-//   }
-//   return courses.value.filter(course => course.category === selectedCategory.value)
-// })
 </script>
 
 <template>
@@ -189,7 +181,7 @@ const displayCourses = computed(() => {
               
               <!-- Bungkus Modul & Latihan di dalam satu div agar rata kiri bersamaan -->
               <div class="flex items-center gap-4">
-                <span>📚 {{ course.lessonsCount }} Modul</span>
+                <span>📚 {{ course.lessonsCount || 0 }} Modul</span>
                 <!-- Hilangkan a tag jika practiceLink '#' agar tidak terlihat seperti link patah -->
                 <a v-if="course.practiceLink !== '#'"
                     :href="course.practiceLink"
@@ -197,9 +189,9 @@ const displayCourses = computed(() => {
                     rel="noopener noreferrer"
                     class="hover:text-indigo-600 transition-colors"
                 >
-                  <span>🤺 {{ course.practiceCount }} Latihan</span>
+                  <span>🤺 {{ course.practiceCount || 0 }} Latihan</span>
                 </a>
-                <span v-else>🤺 {{ course.practiceCount }} Latihan</span>
+                <span v-else>🤺 {{ course.practiceCount || 0 }} Latihan</span>
               </div>
 
               <!-- Level otomatis terdorong ke paling kanan karena justify-between -->

@@ -2,22 +2,53 @@
 import { ref, computed, onMounted } from 'vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
+import { backendSyllabusData } from '../data/backend.js'
+// Nanti jika ada webdev: import { webdevSyllabusData } from '../data/webdev.js'
 
-// Metadata Subject
+// 1. Baca parameter 'subject' dari URL (misal: ?subject=backend)
+const urlParams = new URLSearchParams(window.location.search)
+const subjectKey = urlParams.get('subject') || 'informatika' // default ke informatika jika kosong
+
+// 2. Kamus untuk menentukan data dan key storage berdasarkan URL
+const coursesDB = {
+  informatika: {
+    title: 'Informatika: Fondasi Pemrograman',
+    badge: 'Python Dasar',
+    totalJP: 36,
+    totalMeetings: 18,
+    storageKey: 'dycodev_lms_progress_python',
+    syllabus: informatikaSyllabusData
+  },
+  backend: {
+    title: 'Backend Engineering',
+    badge: 'REST API & Database',
+    totalJP: 24,
+    totalMeetings: 12,
+    storageKey: 'dycodev_lms_progress_backend',
+    syllabus: backendSyllabusData 
+  }
+  // Bisa tambah webdev, qa, dll di sini nanti dengan mudah!
+}
+
+// Ambil konfigurasi yang sesuai dengan URL saat ini
+const activeCourse = coursesDB[subjectKey] || coursesDB.informatika
+const STORAGE_KEY = activeCourse.storageKey
+
+// Metadata Subject sekarang dinamis mengikuti URL!
 const subjectMeta = ref({
-  title: 'Informatika: Fondasi Pemrograman',
-  badge: 'Python Dasar',
-  totalJP: 36,
-  totalMeetings: 18,
+  title: activeCourse.title,
+  badge: activeCourse.badge,
+  totalJP: activeCourse.totalJP,
+  totalMeetings: activeCourse.totalMeetings
 })
 
-const STORAGE_KEY = 'dycodev_lms_progress_python'
+// const STORAGE_KEY = 'dycodev_lms_progress_python'
 
 // Fungsi untuk memuat data awal silabus sekaligus menggabungkannya dengan Local Storage
 const getInitialSyllabus = () => {
   // Ambil data master, lalu gandakan secara mendalam (deep clone) agar
   // perubahan state isCompleted tidak mengotori file aslinya
-  const baseSyllabus = JSON.parse(JSON.stringify(informatikaSyllabusData))
+  const baseSyllabus = JSON.parse(JSON.stringify(activeCourse.syllabus))
 
   // Ambil data yang tersimpan di browser
   try {
@@ -289,7 +320,7 @@ const completionButtonText = computed(() => {
             <div v-show="mod.isOpen" class="mt-2 pl-4 pr-2 flex flex-col gap-1 border-l-2 border-indigo-100 ml-5">
               <button 
                 v-for="lesson in mod.lessons" :key="lesson.id"
-                @click="selectLesson(lesson.id)"
+                @click="navigateTo(lesson.id)"
                 :class="[ 
                   'flex items-start gap-3 p-2.5 rounded-lg text-left text-sm transition-all',
                   activeLesson === lesson.id ? 'bg-indigo-50 text-indigo-700 font-medium' : 'hover:bg-slate-100/50 text-slate-600'
@@ -317,8 +348,13 @@ const completionButtonText = computed(() => {
 
       <!-- Area Konten (Kanan) -->
       <main class="flex-1 overflow-y-auto p-6 md:p-10">
-        <div class="max-w-4xl mx-auto">
-          
+        <!-- Render pesan jika data materi kosong -->
+        <div v-if="!syllabus || syllabus.length === 0" class="max-w-4xl mx-auto text-center py-20">
+          <h2 class="text-2xl font-bold text-slate-600">Konten Belum Tersedia</h2>
+          <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">  
           <!-- Header Konten Aktif -->
           <div class="mb-8 pb-6 border-b border-slate-200">
             <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
