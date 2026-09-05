@@ -226,6 +226,19 @@ const getEmbedUrl = (url) => {
   
   return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
 }
+
+// Label tombol aksi dinamis berdasarkan tipe materi
+const completionButtonText = computed(() => {
+  const type = currentLessonData.value.type
+  const isCompleted = currentLessonData.value.isCompleted
+
+  if (type === 'theory') {
+    return isCompleted ? '✓ Materi Sudah Dipahami' : 'Tandai Sudah Paham'
+  } else {
+    // Digunakan untuk tipe practice, challenge, project, sumative
+    return isCompleted ? '✓ Asesmen Diselesaikan' : 'Tandai Asesmen Selesai'
+  }
+})
 </script>
 
 <template>
@@ -415,7 +428,7 @@ const getEmbedUrl = (url) => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               
-              {{ currentLessonData.isCompleted ? '✓ Materi Sudah Dipahami' : 'Tandai Sudah Paham' }}
+              {{ completionButtonText }}
             </button>
 
             <!-- Tombol Lanjut (Hanya melihat materi berikutnya) -->
