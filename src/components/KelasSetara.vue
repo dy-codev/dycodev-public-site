@@ -150,7 +150,7 @@ const filteredCourses = computed(() => {
                   target="_blank"
                   rel="noopener noreferrer"
               >
-                <span>📚 {{ course.practiceCount }} Latihan</span>
+                <span>🤺 {{ course.practiceCount }} Latihan</span>
               </a>
               <span>🎯 {{ course.level }}</span>
             </div>
