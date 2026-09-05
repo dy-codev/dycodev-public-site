@@ -87,7 +87,16 @@ const getInitialSyllabus = () => {
 // Inisialisasi reaktif langsung memanggil fungsi pemuat data
 const syllabus = ref(getInitialSyllabus())
 
-const activeLesson = ref(101)
+// Fungsi penentu materi pertama secara dinamis
+const getFirstLessonId = () => {
+  if (syllabus.value.length > 0 && syllabus.value[0].lessons.length > 0) {
+    return syllabus.value[0].lessons[0].id
+  }
+  return 0 // Fallback jika benar-benar kosong
+}
+
+// Gunakan hasil fungsi di atas sebagai materi aktif pertama
+const activeLesson = ref(getFirstLessonId())
 
 // Simpan status progress ke Local Storage
 const saveProgress = () => {
