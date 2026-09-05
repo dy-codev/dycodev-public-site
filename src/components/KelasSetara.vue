@@ -22,7 +22,7 @@ const courses = ref([
     level: 'Pemula',
     tag: 'SPBN Bekasi',
     icon: '💻',
-    link: '#'
+    link: '/ruang-belajar/'
   },
   {
     id: 2,
@@ -157,8 +157,8 @@ const filteredCourses = computed(() => {
 
             <a 
               :href="course.link" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              :target="course.link.startsWith('http') ? '_blank' : '_self'"
+              :rel="course.link.startsWith('http') ? 'noopener noreferrer' : ''"
               class="w-full py-2.5 px-4 bg-slate-900 hover:bg-indigo-600 text-white font-medium text-sm rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
             >
               Mulai Belajar
