@@ -82,7 +82,29 @@ export const gamtekSyllabusData = [
             slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vQ3SN3pUxuQ8u7CSQ4aVWDafERfBfeOIa4-uzx2yRuqUyi8tmjiwkyFmOfgP9Ogag/pubembed?start=false',
             content: null
         },
-        { id: 206, title: 'Hands-on: Membuat Etiket', type: 'challenge', duration: '3 JP', isCompleted: false },
+        { 
+            id: 206, 
+            title: 'Hands-on: Membuat Etiket', 
+            type: 'challenge', 
+            duration: '3 JP', 
+            isCompleted: false,
+            pdfUrl: 'https://drive.google.com/file/d/14lRhGCN5O8-dh7fj9cx-NGPDWkcwp8Rh/preview',
+            slideUrl: null,
+            videoUrl: null,
+            externalVideoUrl: null, // Masuk ke "Pengayaan"
+            externalLinks: [ // Masuk ke "Pengayaan"
+                { title: null, url: null, type: null },
+                { title: null, url: null, type: null }
+            ],
+            content: `
+            <h3>Tugas Praktik</h3>
+                <p>Buatlah Etiket dan Garis Tepi pada kertas gambar A4.</p>
+            <ul>
+                <li>Gunakan teknik dua penggaris</code></li>
+                <li>Gunakan ukuran ketebalan pensil yang ditentukan</code></li>
+            </ul>`,
+
+        },
       ]
     },
     {
@@ -120,12 +142,93 @@ export const gamtekSyllabusData = [
         lessons: [
             { id: 401, title: 'Gambar Isometrik', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vSHoLom6vf9-yhu7yFUVqmziAG99VnDWAwc5-GfPkgjgPxAnRfyIxSCfhASAnaZZQ/pubembed?start=false', content: null },
             { id: 402, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
-            { id: 403, title: 'Tahapan Latihan Isometrik 1', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vS_ma1JA9vFhR2U3VBqBxkypgMYGWBh1ls1gwY64bvefRqbyIzJCnYNUe7iljeoqw/pubembed?start=false', content: null },
-            { id: 404, title: 'Hands-on: Menggambar Isometrik 1', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
-            { id: 405, title: 'Tahapan Latihan Isometrik 2', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vSUUILGx_DK3ABp60lqjIeTNUuLOp29Mn5ZZo3OgH2qUnJI2zmOj40SePmK0QfgLQ/pubembed?start=false', content: null },
-            { id: 406, title: 'Hands-on: Menggambar Isometrik 2', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
-            { id: 407, title: 'Tahapan Latihan Isometrik 3', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vQo6voBYTCZRhk3eN6zqIfe2F5TmFpKh3c8JZUbsjwQci_tSTFM2wsyqwFNlBf1ig/pubembed?start=false&loop=false', content: null },
-            { id: 408, title: 'Hands-on: Menggambar Isometrik 3', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
+            { 
+                id: 403, 
+                title: 'Tahapan Latihan Isometrik 1', 
+                type: 'theory', 
+                duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vS_ma1JA9vFhR2U3VBqBxkypgMYGWBh1ls1gwY64bvefRqbyIzJCnYNUe7iljeoqw/pubembed?start=false', 
+                videoUrl: 'https://drive.google.com/file/d/1tlI1Y_IX4pxVHkkvVkCiYvwTBTSUqz-S/preview', 
+                content: null 
+            },
+            { 
+                id: 404, 
+                title: 'Hands-on: Menggambar Isometrik 1', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false,
+                pdfUrl: 'https://drive.google.com/file/d/1WhsuriD-DdbrKdrARwPJ-XelF_uezXjx/preview', 
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null 
+            },
+            { 
+                id: 405, 
+                title: 'Tahapan Latihan Isometrik 2', 
+                type: 'theory', duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vSUUILGx_DK3ABp60lqjIeTNUuLOp29Mn5ZZo3OgH2qUnJI2zmOj40SePmK0QfgLQ/pubembed?start=false', 
+                videoUrl: 'https://drive.google.com/file/d/14RiaEIojg8cQ0T2C3YcZN1Z-MmtwRD6W/preview', 
+                content: null 
+            },
+            { 
+                id: 406, 
+                title: 'Hands-on: Menggambar Isometrik 2', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false,
+                pdfUrl: 'https://drive.google.com/file/d/1AtAs8ukPpLvfy1SJn_iQ2CoJ7tGJNpNG/preview', 
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null 
+            },
+            { 
+                id: 407, 
+                title: 'Tahapan Latihan Isometrik 3', 
+                type: 'theory', duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vQo6voBYTCZRhk3eN6zqIfe2F5TmFpKh3c8JZUbsjwQci_tSTFM2wsyqwFNlBf1ig/pubembed?start=false&loop=false', 
+                videoUrl: 'https://drive.google.com/file/d/1RAo8mClF_IKNQMth1gZ-6JzzSl9QtYkD/preview', 
+                content: null 
+            },
+            { 
+                id: 408, 
+                title: 'Hands-on: Menggambar Isometrik Dengan Jangka 1', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false,
+                pdfUrl: 'https://drive.google.com/file/d/18bCSYs0OdkCOYdmkcmsxHWOCnPYO9CmV/preview', 
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null 
+            },
+            { 
+                id: 409, 
+                title: 'Tahapan Latihan Isometrik 4', 
+                type: 'theory', duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: null, 
+                videoUrl: 'https://drive.google.com/file/d/1a8YaeEQG2z-85AbKXJcZcRx7wsl7QZZ5/preview', 
+                content: `
+                <p>Lihat video Tahapan Latihan Isometrik 4 pada tab <b>Media & Informasi</b></p>
+                ` 
+            },
+            { 
+                id: 410, 
+                title: 'Hands-on: Menggambar Isometrik Dengan Jangka 2', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false,
+                pdfUrl: 'https://drive.google.com/file/d/1Lf6It7wrcObZ4nmd07Fq0FdfWyvYvQJj/preview', 
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null 
+            },
         ]
     },
     {
@@ -135,10 +238,49 @@ export const gamtekSyllabusData = [
         lessons: [
             { id: 501, title: 'Proyeksi Amerika', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vSa0kjzl4Cc9ezNBdrUUxr0eC7h_tYwoHnasUrdFTYpUGDwaGDtf5ktP7EPOOhT-g/pubembed?start=false', content: null },
             { id: 502, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
-            { id: 503, title: 'Tahapan Latihan Proyeksi Amerika 1', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vRuWIOz1QTlp9012jFF0pIKXyW9Iw9EmeI5b4kPkWt8ATqA7o_c0D-b9FuCvTEvDw/pubembed?start=false', content: null },
-            { id: 504, title: 'Hands-on: Menggambar Proyeksi Amerika 1', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
-            { id: 505, title: 'Tahapan Latihan Proyeksi Amerika 2', type: 'theory', duration: '2 JP', isCompleted: false, videoUrl: null, slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vQLHkLMrqxT8V0s2zjGzVvPLczOR3pafDmlIZreXhvHUZ3q3zXMJ1JBii_Zyf88jg/pubembed?start=false', content: null },
-            { id: 506, title: 'Hands-on: Menggambar Proyeksi Amerika 2', type: 'practice', duration: '1 JP', isCompleted: false, videoUrl: null, slideUrl: null, content: null },
+            { 
+                id: 503, 
+                title: 'Tahapan Latihan Proyeksi Amerika 1', 
+                type: 'theory', 
+                duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vRuWIOz1QTlp9012jFF0pIKXyW9Iw9EmeI5b4kPkWt8ATqA7o_c0D-b9FuCvTEvDw/pubembed?start=false', 
+                videoUrl: 'https://drive.google.com/file/d/1RNQtvlA_xL7sONpfSuc1qhjLzKChPODz/preview', 
+                content: null 
+            },
+            { 
+                id: 504, 
+                title: 'Hands-on: Menggambar Proyeksi Amerika 1', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false,
+                pdfUrl: 'https://drive.google.com/file/d/1xHBmmRzMed6RXXZbW9CZMvsxf3sNIcwr/preview', 
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null 
+            },
+            { 
+                id: 505, 
+                title: 'Tahapan Latihan Proyeksi Amerika 2', 
+                type: 'theory', 
+                duration: '2 JP', 
+                isCompleted: false,
+                pdfUrl: null, 
+                slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vQLHkLMrqxT8V0s2zjGzVvPLczOR3pafDmlIZreXhvHUZ3q3zXMJ1JBii_Zyf88jg/pubembed?start=false', 
+                videoUrl: 'https://drive.google.com/file/d/1ibfIFU4fqwbG-D4rT9fB7tCGraOwN3nQ/preview', 
+                content: null 
+            },
+            { 
+                id: 506, 
+                title: 'Hands-on: Menggambar Proyeksi Amerika 2', 
+                type: 'practice', 
+                duration: '1 JP', 
+                isCompleted: false, 
+                pdfUrl: 'https://drive.google.com/file/d/1s5f05XThHI7V8wAfbjJVr2pFD8Gz9cWW/preview',
+                slideUrl: null, 
+                videoUrl: null, 
+                content: null },
         ]
     },
     {
