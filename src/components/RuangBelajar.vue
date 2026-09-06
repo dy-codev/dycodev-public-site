@@ -390,75 +390,84 @@ const completionButtonText = computed(() => {
         </aside>
 
         <!-- Area Konten (Kanan) -->
-        <main class="flex-1 overflow-y-auto p-6 md:p-10">
-          <!-- Render pesan jika data materi kosong -->
-          <div v-if="!syllabus || syllabus.length === 0" class="max-w-4xl mx-auto text-center py-20">
-            <h2 class="text-2xl font-bold text-slate-600">Konten Belum Tersedia</h2>
-            <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+          
+          <!-- Area Konten yang Bisa Di-scroll -->
+          <div class="flex-1 overflow-y-auto p-6 md:p-10 pb-12">
+            
+            <!-- Render pesan jika data materi kosong -->
+            <div v-if="!syllabus || syllabus.length === 0" class="max-w-4xl mx-auto text-center py-20">
+              <h2 class="text-2xl font-bold text-slate-600">Konten Belum Tersedia</h2>
+              <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
+            </div>
+
+            <!-- JIKA ADA MATERI -->
+            <div v-else class="max-w-4xl mx-auto">  
+              
+              <!-- Header Konten Aktif -->
+              <div class="mb-8 pb-6 border-b border-slate-200">
+                <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
+                  {{ currentLessonData.moduleTitle.split(':')[0] }} • {{ currentLessonData.type }}
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">
+                  {{ currentLessonData.title }}
+                </h2>
+                <p class="text-slate-600 text-lg leading-relaxed">
+                  {{ lessonBrief }}
+                </p>
+              </div>
+
+              <!-- Simulasi Konten Markdown / Video / PDF -->
+              <div class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
+              
+                <!-- Tempat Video YouTube -->
+                <div v-if="currentLessonData.videoUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
+                  <iframe 
+                    class="w-full h-full"
+                    :src="getEmbedUrl(currentLessonData.videoUrl)" 
+                    title="Video Materi Pembelajaran" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+
+                <!-- Tempat Google Slide -->
+                <div v-if="currentLessonData.slideUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
+                  <iframe 
+                    class="w-full h-full"
+                    :src="currentLessonData.slideUrl" 
+                    title="Presentasi Materi" 
+                    frameborder="0" 
+                    allowfullscreen="true" 
+                    mozallowfullscreen="true" 
+                    webkitallowfullscreen="true">
+                  </iframe>
+                </div>
+
+                <!-- Tempat Modul PDF -->
+                <div v-if="currentLessonData.pdfUrl" class="w-full min-h-[600px] mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
+                  <iframe 
+                    class="w-full h-full min-h-[600px]"
+                    :src="currentLessonData.pdfUrl" 
+                    title="Modul Pembelajaran PDF" 
+                    frameborder="0" 
+                    allow="autoplay"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+
+                <!-- Konten Teks -->
+                <div v-html="currentLessonData.content"></div>
+
+              </div>
+            </div>
           </div>
 
-          <div class="max-w-4xl mx-auto">  
-            <!-- Header Konten Aktif -->
-            <div class="mb-8 pb-6 border-b border-slate-200">
-              <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
-                {{ currentLessonData.moduleTitle.split(':')[0] }} • {{ currentLessonData.type }}
-              </div>
-              <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">
-                {{ currentLessonData.title }}
-              </h2>
-              <p class="text-slate-600 text-lg leading-relaxed">
-                {{ lessonBrief }}
-              </p>
-            </div>
-
-            <!-- Simulasi Konten Markdown / Video -->
-            <div class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
-            
-              <!-- Tempat Video (Otomatis memutar YouTube jika URL tersedia) -->
-              <div v-if="currentLessonData.videoUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
-                <iframe 
-                  class="w-full h-full"
-                  :src="getEmbedUrl(currentLessonData.videoUrl)" 
-                  title="Video Materi Pembelajaran" 
-                  frameborder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allowfullscreen>
-                </iframe>
-              </div>
-
-              <!-- Tempat Google Slide (Otomatis muncul jika slideUrl tersedia) -->
-              <div v-if="currentLessonData.slideUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
-                <iframe 
-                  class="w-full h-full"
-                  :src="currentLessonData.slideUrl" 
-                  title="Presentasi Materi" 
-                  frameborder="0" 
-                  allowfullscreen="true" 
-                  mozallowfullscreen="true" 
-                  webkitallowfullscreen="true">
-                </iframe>
-              </div>
-
-              <!-- Tempat Modul PDF (Otomatis muncul jika pdfUrl tersedia) -->
-              <div v-if="currentLessonData.pdfUrl" class="w-full min-h-[600px] mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
-                <iframe 
-                  class="w-full h-full min-h-[600px]"
-                  :src="currentLessonData.pdfUrl" 
-                  title="Modul Pembelajaran PDF" 
-                  frameborder="0" 
-                  allow="autoplay"
-                  allowfullscreen>
-                </iframe>
-              </div>
-
-              <!-- Konten Materi yang Di-render dari Data -->
-              <div v-html="currentLessonData.content"></div>
-
-            </div>
-
-            <!-- Navigasi Bawah (Prev/Next) -->
-            <div class="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <!-- FIXED BOTTOM BAR (Navigasi Selalu di Bawah) -->
+          <div v-if="syllabus && syllabus.length > 0" class="shrink-0 border-t border-slate-200/80 bg-white/90 backdrop-blur-md px-6 py-4 md:px-10 z-20 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.05)]">
+            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             
               <!-- Tombol Sebelumnya -->
               <button
@@ -491,7 +500,7 @@ const completionButtonText = computed(() => {
                 {{ completionButtonText }}
               </button>
 
-              <!-- Tombol Lanjut (Hanya melihat materi berikutnya) -->
+              <!-- Tombol Lanjut -->
               <button
                 v-if="nextLesson"
                 @click="navigateTo(nextLesson.id)"
@@ -504,6 +513,7 @@ const completionButtonText = computed(() => {
 
             </div>
           </div>
+
         </main>
 
       </template>
