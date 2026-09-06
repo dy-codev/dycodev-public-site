@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { backendSyllabusData } from '../data/backend.js'
+import { gamtekSyllabusData } from '../data/gamtek.js'
 
 // Data Kategori
 const categories = [
@@ -33,12 +34,12 @@ const courses = ref([
     title: 'Gambar Teknik SMK',
     category: 'Materi SMK',
     description: 'Panduan standar penggambaran teknik, proyeksi, dan dokumentasi visual teknis untuk siswa kejuruan.',
-    lessonsCount: 17,
-    practiceCount: 18,
+    syllabus: gamtekSyllabusData,
     level: 'Pemula',
     tag: 'SPBN Bekasi',
     icon: '📐',
-    link: 'https://drive.google.com/drive/folders/1oB0gv3FnmG0n1MOPM6QQHHq9XbcojyEF?usp=sharing',
+    // link: 'https://drive.google.com/drive/folders/1oB0gv3FnmG0n1MOPM6QQHHq9XbcojyEF?usp=sharing',
+    link: '/ruang-belajar/?subject=gamtek',
     practiceLink: 'https://drive.google.com/drive/folders/1Lk_OQfelBLp4fMFXpS0pIhSU3Q0JabbD?usp=sharing'
   },
   {

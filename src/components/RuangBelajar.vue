@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
+import { gamtekSyllabusData } from '../data/gamtek.js'
 import { backendSyllabusData } from '../data/backend.js'
 // Nanti jika ada webdev: import { webdevSyllabusData } from '../data/webdev.js'
 
@@ -12,12 +13,20 @@ const subjectKey = urlParams.get('subject') || 'unknown' // default ke informati
 // 2. Kamus untuk menentukan data dan key storage berdasarkan URL
 const coursesDB = {
   informatika: {
-    title: 'Informatika: Fondasi Pemrograman',
+    title: 'Informatika: Untuk SMK/MAK Kelas X',
     badge: 'Python Dasar',
     totalJP: 36,
     totalMeetings: 18,
     storageKey: 'dycodev_lms_progress_python',
     syllabus: informatikaSyllabusData
+  },
+  gamtek: {
+    title: 'Dasar-Dasar Gambar Teknik',
+    badge: '',
+    totalJP: 24,
+    totalMeetings: 12,
+    storageKey: 'dycodev_lms_progress_gamtek',
+    syllabus: gamtekSyllabusData 
   },
   backend: {
     title: 'Backend Engineering',
@@ -414,6 +423,31 @@ const completionButtonText = computed(() => {
                   frameborder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                   referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen>
+                </iframe>
+              </div>
+
+              <!-- Tempat Google Slide (Otomatis muncul jika slideUrl tersedia) -->
+              <div v-if="currentLessonData.slideUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
+                <iframe 
+                  class="w-full h-full"
+                  :src="currentLessonData.slideUrl" 
+                  title="Presentasi Materi" 
+                  frameborder="0" 
+                  allowfullscreen="true" 
+                  mozallowfullscreen="true" 
+                  webkitallowfullscreen="true">
+                </iframe>
+              </div>
+
+              <!-- Tempat Modul PDF (Otomatis muncul jika pdfUrl tersedia) -->
+              <div v-if="currentLessonData.pdfUrl" class="w-full min-h-[600px] mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
+                <iframe 
+                  class="w-full h-full min-h-[600px]"
+                  :src="currentLessonData.pdfUrl" 
+                  title="Modul Pembelajaran PDF" 
+                  frameborder="0" 
+                  allow="autoplay"
                   allowfullscreen>
                 </iframe>
               </div>
