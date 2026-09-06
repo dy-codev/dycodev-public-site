@@ -10,7 +10,7 @@ export const backendSyllabusData = [
         type: 'theory', 
         duration: '2 JP', 
         isCompleted: false,
-        videoUrl: 'https://www.youtube.com/watch?v=JK1TLrqztjo',
+        videoUrl: 'https://www.youtube.com/watch?v=x3c1ih2NJEg',
         content: `
           <h3>Cara Kerja Klien-Server</h3>
           <p>Backend bertindak sebagai otak di balik layar yang memproses logika bisnis, mengelola basis data, dan melayani permintaan (*request*) dari frontend atau aplikasi mobile.</p>
