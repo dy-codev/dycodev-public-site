@@ -251,6 +251,25 @@ const hasMediaContent = computed(() => {
   )
 })
 
+// Label dinamis untuk Tab 1 berdasarkan judul atau tipe materi
+const mainTabLabel = computed(() => {
+  const lesson = currentLessonData.value
+  if (!lesson || !lesson.title) return '📖 Materi Utama'
+
+  // Jika judul mengandung titik dua (misal: "Quiz: Hardware", "Hands-on: Garis"), ambil kata depannya
+  if (lesson.title.includes(':')) {
+    const prefix = lesson.title.split(':')[0].trim()
+    return `⚡ ${prefix}`
+  }
+
+  // Fallback berdasarkan tipe materi jika tidak ada titik dua
+  if (lesson.type === 'theory') return '📖 Materi Utama'
+  if (lesson.type === 'practice' || lesson.type === 'challenge') return '⚡ Lembar Praktik'
+  if (lesson.type === 'project' || lesson.type === 'sumative') return '🏆 Evaluasi / Proyek'
+
+  return '📖 Materi Utama'
+})
+
 // Fungsi untuk mengubah link YouTube standar menjadi link Embed
 const getEmbedUrl = (url) => {
   if (!url) return '';
@@ -449,7 +468,7 @@ const completionButtonText = computed(() => {
                     activeTab === 'materi' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
                   ]"
                 >
-                  📖 Materi Utama
+                  {{ mainTabLabel }}
                 </button>
                 <button
                   @click="activeTab = 'media'"
@@ -486,6 +505,17 @@ const completionButtonText = computed(() => {
                     title="Modul Pembelajaran PDF" 
                     frameborder="0" 
                     allow="autoplay"
+                    allowfullscreen>
+                  </iframe>
+                </div>
+
+                <!-- Tempat Kuis Interaktif HTML (Otomatis muncul jika quizUrl tersedia) -->
+                <div v-if="currentLessonData.quizUrl" class="w-full min-h-[650px] mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+                  <iframe 
+                    class="w-full h-full min-h-[650px]"
+                    :src="currentLessonData.quizUrl" 
+                    title="Kuis Interaktif" 
+                    frameborder="0" 
                     allowfullscreen>
                   </iframe>
                 </div>

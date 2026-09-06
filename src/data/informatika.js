@@ -43,18 +43,16 @@ berat_bagasi_kg = 25.5</code></pre>
         },
         { 
             id: 202, 
-            title: 'Hands-on: Perakitan PC Unit', 
+            title: 'Quiz: Mengenal Perangkat Keras', 
             type: 'practice', 
-            duration: '3 JP', 
+            duration: '1 JP', 
             isCompleted: false,
             videoUrl: null,
+            quizUrl: '/kuis-hardware.html',
             content: `
-            <h3>Tugas Praktik</h3>
-                <p>Buatlah program Python sederhana yang meminta input jarak tempuh pesawat (dalam km) dan kecepatan rata-rata (dalam km/jam), lalu tampilkan estimasi waktu tempuhnya.</p>
-            <ul>
-                <li>Gunakan fungsi <code>input()</code></li>
-                <li>Konversi tipe data ke <code>float</code> atau <code>int</code></li>
-            </ul>`
+            <h3>Uji Pemahaman Hardware</h3>
+            <p>Silakan kerjakan kuis interaktif di bawah ini untuk menguji pemahamanmu mengenai komponen perangkat keras komputer.</p>
+            `
         },
         { id: 203, title: 'Perangkat Lunak Komputer', type: 'theory', duration: '2 JP', isCompleted: false },
         { id: 204, title: 'Hands-on: Instalasi OS', type: 'practice', duration: '2.5 JP', isCompleted: false },
