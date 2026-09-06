@@ -365,7 +365,8 @@ const completionButtonText = computed(() => {
                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                     </svg>
                     <span v-else-if="lesson.type === 'theory'" class="text-slate-400">📖</span>
-                    <span v-else-if="lesson.type === 'challenge' || lesson.type === 'practice'" class="text-orange-400">⚡</span>
+                    <span v-else-if="lesson.type === 'practice'" class="text-orange-400">⚡</span>
+                    <span v-else-if="lesson.type === 'challenge'" class="text-slate-400">🧗🏼‍♂️</span>
                     <span v-else-if="lesson.type === 'project'" class="text-indigo-500">🎯</span>
                   </span>
                 

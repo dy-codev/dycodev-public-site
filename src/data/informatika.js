@@ -1,21 +1,28 @@
 export const informatikaSyllabusData = [
     {
       id: 1,
-      title: 'Sprint 1: Berpikir Komputasional',
-      isOpen: true,
+      title: 'Sprint 1: Teknologi Informasi dan Komunikasi',
+      isOpen: false,
       lessons: [
-        { id: 101, title: 'Pengenalan Algoritma', type: 'theory', duration: '2 JP', isCompleted: false },
-        { id: 102, title: 'Mini Challenge: Flowchart', type: 'challenge', duration: '1 JP', isCompleted: false }
+        { id: 101, title: 'Aplikasi Media Komunikasi', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 102, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
+        { id: 103, title: 'Mesin Pencari Informasi Digital', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 104, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
+        { id: 105, title: 'Fitur Lanjutan Aplikasi Perkantoran', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 106, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
+        { id: 107, title: 'Integrasi Aplikasi Office', type: 'theory', duration: '1 JP', isCompleted: false },
+        { id: 108, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
+        { id: 109, title: 'Mini Project: Webinar', type: 'challenge', duration: '1 JP', isCompleted: false }
       ]
     },
     {
       id: 2,
-      title: 'Sprint 2: Pemrograman Python',
-      isOpen: true,
+      title: 'Sprint 2: Sistem Komputer',
+      isOpen: false,
       lessons: [
         { 
             id: 201, 
-            title: 'Variabel & Tipe Data', 
+            title: 'Prengkat Keras Komputer', 
             type: 'theory', 
             duration: '2 JP', 
             isCompleted: false,
@@ -36,9 +43,9 @@ berat_bagasi_kg = 25.5</code></pre>
         },
         { 
             id: 202, 
-            title: 'Hands-on: Kalkulator Aviasi', 
+            title: 'Hands-on: Perakitan PC Unit', 
             type: 'practice', 
-            duration: '2 JP', 
+            duration: '3 JP', 
             isCompleted: false,
             videoUrl: null,
             content: `
@@ -49,7 +56,79 @@ berat_bagasi_kg = 25.5</code></pre>
                 <li>Konversi tipe data ke <code>float</code> atau <code>int</code></li>
             </ul>`
         },
-        { id: 203, title: 'Checkpoint: Percabangan (If/Else)', type: 'project', duration: '3 JP', isCompleted: false }
+        { id: 203, title: 'Perangkat Lunak Komputer', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 204, title: 'Hands-on: Instalasi OS', type: 'practice', duration: '2.5 JP', isCompleted: false },
+        { id: 205, title: 'Pengguna', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 206, title: 'Quiz', type: 'practice', duration: '0.5 JP', isCompleted: false },
+        { id: 207, title: 'Mekanisme Kinerja Internal Pada Komputer', type: 'theory', duration: '1 JP', isCompleted: false },
+        { id: 208, title: 'Quiz', type: 'practice', duration: '0.5 JP', isCompleted: false },
+        { id: 209, title: 'Interaksi Antara Kmputer dan Pengguna', type: 'theory', duration: '1 JP', isCompleted: false },
+        { id: 210, title: 'Quiz', type: 'practice', duration: '0.5 JP', isCompleted: false },
+        { id: 211, title: 'Mini Challenge: Quiz', type: 'challenge', duration: '1 JP', isCompleted: false }
       ]
-    }
+    },
+    {
+        id: 3,
+        title: 'Sprint 3: Jaringan Komputer',
+        isOpen: false,
+        lessons: [
+            {id: 301,}
+        ]
+    },
+    {
+        id: 4,
+        title: 'Sprint 4: Analisis Data',
+        isOpen: false,
+        lessons: [
+            {id: 401}
+        ]
+    },
+    {
+        id: 5,
+        title: 'Sprint 5: Dampak Sosial Informatika',
+        isOpen: false,
+        lessons: [
+            {id: 501}
+        ]
+    },
+    {
+        id: 6,
+        title: 'Sprint 6: SAS Ganjil',
+        isOpen: false,
+        lessons: [
+            {}
+        ]
+    },
+    {
+        id: 7,
+        title: 'Sprint 7: Berpikir Komputasional',
+        isOpen: false,
+        lessons: [
+            {}
+        ]
+    },
+    {
+        id: 8,
+        title: 'Sprint 8: Algoritma & Pemrograman',
+        isOpen: false,
+        lessons: [
+            {}
+        ]
+    },
+    {
+        id: 9,
+        title: 'Sprint 9: Praktik Lintas Bidang',
+        isOpen: false,
+        lessons: [
+            {}
+        ]
+    },
+    {
+        id: 10,
+        title: 'Sprint 10: SAS Genap',
+        isOpen: false,
+        lessons: [
+            {}
+        ]
+    },
   ]
