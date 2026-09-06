@@ -10,14 +10,20 @@ export const gamtekSyllabusData = [
             type: 'theory', 
             duration: '2 JP', 
             isCompleted: false,
-            videoUrl: null,
+            pdfUrl: null,
             slideUrl: 'https://docs.google.com/presentation/d/e/2PACX-1vS3VzywmRvmW3ie-S8YAMLtTn3sPn1VYwp3HoRlHREHZ6Hg3lAQ_Qb6_F7gyYXCVg/pubembed?start=false&loop=false',
+            videoUrl: null,
+            externalVideoUrl: null, // Masuk ke "Pengayaan"
+            externalLinks: [ // Masuk ke "Pengayaan"
+                { title: null, url: null, type: null },
+                { title: null, url: null, type: null }
+            ],
             content: `
             <h3>Pengantar Gambar Teknik</h3>
             `
         },
-        { id: 102, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
-        { id: 109, title: 'Mini Challenge: ', type: 'challenge', duration: '1 JP', isCompleted: false, videoUrl: '#', content: `` }
+        { id: 102, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false, pdfUrl: null, slideUrl: null, videoUrl: null, externalVideoUrl: null, externalLinks: [ { title: null, url: null, type: null }, { title: null, url: null, type: null } ], content: null },
+        { id: 109, title: 'Mini Challenge: ', type: 'challenge', duration: '1 JP', isCompleted: false, pdfUrl: null, slideUrl: null, videoUrl: null, externalVideoUrl: null, externalLinks: [ { title: null, url: null, type: null }, { title: null, url: null, type: null } ], content: null }
       ]
     },
     {
@@ -31,8 +37,10 @@ export const gamtekSyllabusData = [
             type: 'theory', 
             duration: '2 JP', 
             isCompleted: false,
-            videoUrl: null,
+            pdfUrl: null,
             slideUrl:'https://docs.google.com/presentation/d/e/2PACX-1vQ5NBE698nJX_VbB8ltOebzzAOJdT50mUmQSeJor-aVzKHXRzXqR4gLvY5sqtYmHQ/pubembed?start=false',
+            videoUrl: null,
+            externalVideoUrl: null, externalLinks: [ { title: null, url: null, type: null }, { title: null, url: null, type: null } ],
             content: `
             <h3>Garis Gambar</h3>
             `

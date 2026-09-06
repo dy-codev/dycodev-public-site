@@ -107,6 +107,8 @@ const getFirstLessonId = () => {
 // Gunakan hasil fungsi di atas sebagai materi aktif pertama
 const activeLesson = ref(getFirstLessonId())
 
+const activeTab = ref('materi')
+
 // Simpan status progress ke Local Storage
 const saveProgress = () => {
   try {
@@ -208,6 +210,9 @@ const navigateTo = (lessonId) => {
   }
   // Otomatis tutup drawer di mobile saat materi dipilih
   isDrawerOpen.value = false 
+
+  // Reset tab ke materi utama setiap kali ganti pelajaran
+  activeTab.value = 'materi'
 }
 
 // Brief/deskripsi pengantar yang otomatis berubah berdasarkan tipe materi
@@ -226,6 +231,24 @@ const lessonBrief = computed(() => {
     default:
       return `Sesi pembelajaran interaktif untuk topik ${currentLessonData.value.title}.`
   }
+})
+
+// Memfilter link yang benar-benar ada isinya (bukan placeholder null)
+const validExternalLinks = computed(() => {
+  const links = currentLessonData.value.externalLinks
+  if (!links || !Array.isArray(links)) return []
+  
+  // Hanya kembalikan objek link yang memiliki URL valid (tidak null dan tidak string kosong)
+  return links.filter(link => link && link.url !== null && link.url.trim() !== '')
+})
+
+// Mengecek secara total apakah Tab Media memiliki minimal 1 konten valid
+const hasMediaContent = computed(() => {
+  return !!(
+    currentLessonData.value.videoUrl || 
+    currentLessonData.value.externalVideoUrl || 
+    validExternalLinks.value.length > 0
+  )
 })
 
 // Fungsi untuk mengubah link YouTube standar menjadi link Embed
@@ -417,22 +440,31 @@ const completionButtonText = computed(() => {
                 </p>
               </div>
 
-              <!-- Simulasi Konten Markdown / Video / PDF -->
-              <div class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
-              
-                <!-- Tempat Video YouTube -->
-                <div v-if="currentLessonData.videoUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
-                  <iframe 
-                    class="w-full h-full"
-                    :src="getEmbedUrl(currentLessonData.videoUrl)" 
-                    title="Video Materi Pembelajaran" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen>
-                  </iframe>
-                </div>
+              <!-- TABS NAVIGATION -->
+              <div class="flex gap-6 border-b border-slate-200 mb-8 mt-2">
+                <button
+                  @click="activeTab = 'materi'"
+                  :class="[
+                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200', 
+                    activeTab === 'materi' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ]"
+                >
+                  📖 Materi Utama
+                </button>
+                <button
+                  @click="activeTab = 'media'"
+                  :class="[
+                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200', 
+                    activeTab === 'media' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ]"
+                >
+                  🎧 Media & Referensi
+                </button>
+              </div>
 
+              <!-- TAB 1: MATERI UTAMA (Teks, Slide, PDF) -->
+              <div v-show="activeTab === 'materi'" class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
+                
                 <!-- Tempat Google Slide -->
                 <div v-if="currentLessonData.slideUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
                   <iframe 
@@ -458,8 +490,75 @@ const completionButtonText = computed(() => {
                   </iframe>
                 </div>
 
-                <!-- Konten Teks -->
+                <!-- Konten Teks / HTML -->
                 <div v-html="currentLessonData.content"></div>
+              </div>
+
+              <!-- TAB 2: MEDIA & REFERENSI (Video Ori & Eksternal) -->
+              <div v-show="activeTab === 'media'" class="space-y-10">
+                
+                <!-- Segmen 1: Video Instruktur (Ori) -->
+                <div v-if="currentLessonData.videoUrl">
+                  <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">👨‍🏫</span> 
+                    Penjelasan Instruktur
+                  </h3>
+                  <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
+                    <iframe 
+                      class="w-full h-full"
+                      :src="getEmbedUrl(currentLessonData.videoUrl)" 
+                      title="Video Materi Pembelajaran" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+                </div>
+
+                <!-- Segmen 2: Referensi Eksternal -->
+                <div v-if="currentLessonData.externalVideoUrl || validExternalLinks.length > 0">
+                  <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 pt-6 border-t border-slate-200">
+                    <span class="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">💡</span> 
+                    Pengayaan & Referensi Luar
+                  </h3>
+                  
+                  <!-- Video Eksternal (Misal: YouTube channel lain) -->
+                  <div v-if="currentLessonData.externalVideoUrl" class="aspect-video w-full mb-6 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
+                    <iframe 
+                      class="w-full h-full"
+                      :src="getEmbedUrl(currentLessonData.externalVideoUrl)" 
+                      title="Video Referensi Eksternal" 
+                      frameborder="0" 
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+
+                  <!-- Daftar Link/Makalah Eksternal (Hanya melooping yang valid) -->
+                  <ul v-if="validExternalLinks.length > 0" class="space-y-3">
+                    <li v-for="(link, index) in validExternalLinks" :key="index">
+                      <a :href="link.url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <div>
+                          <p class="text-sm font-semibold text-slate-700 group-hover:text-indigo-700 m-0">
+                            {{ link.title || 'Tautan Referensi' }}
+                          </p>
+                          <p class="text-xs text-slate-500 m-0 mt-0.5">
+                            {{ link.type || 'Tautan Eksternal' }}
+                          </p>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Fallback jika tab media BENAR-BENAR KOSONG / hanya berisi null -->
+                <div v-if="!hasMediaContent" class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+                  <span class="text-4xl block mb-3">📭</span>
+                  <p class="text-slate-500 font-medium">Belum ada media audio/visual untuk sesi ini.</p>
+                  <p class="text-sm text-slate-400 mt-1">Silakan fokus pada tab Materi Utama.</p>
+                </div>
 
               </div>
             </div>

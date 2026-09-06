@@ -10,7 +10,14 @@ export const backendSyllabusData = [
         type: 'theory', 
         duration: '2 JP', 
         isCompleted: false,
-        videoUrl: 'https://www.youtube.com/watch?v=x3c1ih2NJEg',
+        slideUrl: null,
+        pdfUrl: null,
+        videoUrl: null,
+        externalVideoUrl: 'https://www.youtube.com/watch?v=x3c1ih2NJEg', // Masuk ke "Pengayaan"
+        externalLinks: [ // Masuk ke "Pengayaan"
+          { title: 'Jurnal Standar ISO Garis Gambar', url: 'https://link-jurnal.com/iso-pdf', type: 'Makalah / Jurnal' },
+          { title: 'Simulator AutoCAD Online', url: 'https://autocad-web.com', type: 'Interactive Web' }
+        ],
         content: `
           <h3>Cara Kerja Klien-Server</h3>
           <p>Backend bertindak sebagai otak di balik layar yang memproses logika bisnis, mengelola basis data, dan melayani permintaan (*request*) dari frontend atau aplikasi mobile.</p>
