@@ -546,7 +546,8 @@ const completionButtonText = computed(() => {
                     <span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">👨‍🏫</span> 
                     Penjelasan Instruktur
                   </h3>
-                  <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
+                  <!-- Menambahkan min-h-[260px] untuk mobile, dan min-h-[320px] untuk layar yang sedikit lebih besar -->
+                  <div class="aspect-video w-full min-h-[260px] sm:min-h-[320px] rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200 relative">
                     <iframe 
                       class="w-full h-full"
                       :src="getEmbedUrl(currentLessonData.videoUrl)" 
@@ -555,6 +556,20 @@ const completionButtonText = computed(() => {
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                       allowfullscreen>
                     </iframe>
+                  </div>
+                  <!-- Tombol Alternatif Buka Video (Khusus Mobile) -->
+                  <div v-if="currentLessonData.videoUrl.includes('drive.google.com')" class="mt-3 block sm:hidden">
+                    <a 
+                      :href="currentLessonData.videoUrl" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-200 active:bg-slate-300 transition-colors"
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Buka Video Penuh
+                    </a>
                   </div>
                 </div>
 

@@ -54,7 +54,7 @@ berat_bagasi_kg = 25.5</code></pre>
             <p>Silakan kerjakan kuis interaktif di bawah ini untuk menguji pemahamanmu mengenai komponen perangkat keras komputer.</p>
             `
         },
-        { id: 203, title: 'Perangkat Lunak Komputer', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 203, title: 'Perangkat Lunak Komputer', type: 'theory', duration: '2 JP', isCompleted: false, content: null },
         { id: 204, title: 'Hands-on: Instalasi OS', type: 'practice', duration: '2.5 JP', isCompleted: false },
         { id: 205, title: 'Pengguna', type: 'theory', duration: '2 JP', isCompleted: false },
         { id: 206, title: 'Quiz', type: 'practice', duration: '0.5 JP', isCompleted: false },
