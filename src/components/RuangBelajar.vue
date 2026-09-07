@@ -1,5 +1,6 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { marked } from 'marked'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { gamtekSyllabusData } from '../data/gamtek.js'
@@ -38,6 +39,10 @@ const coursesDB = {
   }
   // Bisa tambah webdev, qa, dll di sini nanti dengan mudah!
 }
+
+// State baru untuk menampung hasil render teks
+const renderedContent = ref('')
+const isLoadingContent = ref(false)
 
 // Ambil konfigurasi yang sesuai dengan URL saat ini
 const activeCourse = coursesDB[subjectKey] || {
@@ -305,6 +310,40 @@ const completionButtonText = computed(() => {
     return isCompleted ? '✓ Asesmen Diselesaikan' : 'Tandai Asesmen Selesai'
   }
 })
+
+// Pantau setiap kali currentLessonData berubah (siswa klik materi lain)
+watch(
+  () => currentLessonData.value, 
+  async (newLesson) => {
+    if (!newLesson) return;
+
+    // Skenario 1: Jika materi ini menggunakan Markdown (.md)
+    if (newLesson.markdownUrl) {
+      isLoadingContent.value = true
+      try {
+        const response = await fetch(newLesson.markdownUrl)
+        if (!response.ok) throw new Error('File tidak ditemukan')
+        
+        const rawText = await response.text()
+        renderedContent.value = marked.parse(rawText) // Ubah MD ke HTML
+      } catch (error) {
+        console.error("Gagal memuat markdown:", error)
+        renderedContent.value = '<div class="p-4 bg-red-50 text-red-600 rounded-lg">Gagal memuat materi teks.</div>'
+      } finally {
+        isLoadingContent.value = false
+      }
+    } 
+    // Skenario 2: Jika masih menggunakan format string HTML lama (Backward compatibility)
+    else if (newLesson.content) {
+      renderedContent.value = newLesson.content
+    } 
+    // Skenario 3: Kosong
+    else {
+      renderedContent.value = ''
+    }
+  }, 
+  { immediate: true } // Langsung jalankan saat komponen pertama kali dimuat
+)
 </script>
 
 <template>
@@ -534,7 +573,10 @@ const completionButtonText = computed(() => {
                 </div>
 
                 <!-- Konten Teks / HTML -->
-                <div v-html="currentLessonData.content"></div>
+                <div v-if="isLoadingContent" class="py-10 text-center text-slate-500 animate-pulse">
+                  Memuat materi teks...
+                </div>
+                <div v-else v-html="renderedContent"></div>
               </div>
 
               <!-- TAB 2: MEDIA & REFERENSI (Video Ori & Eksternal) -->

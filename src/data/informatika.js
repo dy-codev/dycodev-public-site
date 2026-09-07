@@ -4,7 +4,7 @@ export const informatikaSyllabusData = [
       title: 'Sprint 1: Teknologi Informasi dan Komunikasi',
       isOpen: false,
       lessons: [
-        { id: 101, title: 'Aplikasi Media Komunikasi', type: 'theory', duration: '2 JP', isCompleted: false },
+        { id: 101, title: 'Aplikasi Media Komunikasi', type: 'theory', duration: '2 JP', isCompleted: false, pdfUrl: null, slideUrl: null, videoUrl: null, markdownUrl: '/materi/informatika/python-dasar.md', content: null },
         { id: 102, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
         { id: 103, title: 'Mesin Pencari Informasi Digital', type: 'theory', duration: '2 JP', isCompleted: false },
         { id: 104, title: 'Quiz', type: 'practice', duration: '1 JP', isCompleted: false },
@@ -48,7 +48,7 @@ berat_bagasi_kg = 25.5</code></pre>
             duration: '1 JP', 
             isCompleted: false,
             videoUrl: null,
-            quizUrl: '/kuis-hardware.html',
+            quizUrl: '/kuis/informatika/kuis-hardware.html',
             content: `
             <h3>Uji Pemahaman Hardware</h3>
             <p>Silakan kerjakan kuis interaktif di bawah ini untuk menguji pemahamanmu mengenai komponen perangkat keras komputer.</p>
