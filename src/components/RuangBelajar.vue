@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { marked } from 'marked'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
@@ -353,6 +353,73 @@ watch(
   }, 
   { immediate: true } 
 )
+
+// ==========================================
+// FITUR RIWAYAT NILAI KUIS
+// ==========================================
+const QUIZ_STORAGE_KEY = `dycodev_quiz_scores_${subjectKey}`
+const quizHistory = ref({})
+
+// Fungsi memuat riwayat nilai dari Local Storage
+const loadQuizHistory = () => {
+  try {
+    const saved = localStorage.getItem(QUIZ_STORAGE_KEY)
+    if (saved) quizHistory.value = JSON.parse(saved)
+  } catch (e) {
+    console.error("Gagal memuat riwayat nilai", e)
+  }
+}
+
+// Fungsi menyimpan riwayat nilai
+const saveQuizScore = (score) => {
+  const lessonId = activeLesson.value
+  
+  if (!quizHistory.value[lessonId]) {
+    quizHistory.value[lessonId] = []
+  }
+
+  // Tambahkan data tes baru
+  quizHistory.value[lessonId].push({
+    date: new Date().toISOString(),
+    score: score,
+    isPassed: score >= 70 // KKM disetel 70, ubah sesuai standar Anda
+  })
+
+  // Simpan ke Local Storage
+  localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(quizHistory.value))
+}
+
+// Listener untuk menangkap pesan dari iframe HTML
+const handleIframeMessage = (event) => {
+  // Pastikan tipe pesan sesuai dengan yang dikirim dari kuis
+  if (event.data && event.data.type === 'QUIZ_FINISHED') {
+    saveQuizScore(event.data.score)
+    // Opsional: Otomatis pindah ke tab nilai setelah kuis selesai
+    activeTab.value = 'nilai' 
+  }
+}
+
+// Pasang 'telinga' saat komponen dimuat
+onMounted(() => {
+  loadQuizHistory()
+  window.addEventListener('message', handleIframeMessage)
+})
+
+// Cabut 'telinga' saat komponen dihancurkan (good practice)
+onUnmounted(() => {
+  window.removeEventListener('message', handleIframeMessage)
+})
+
+// Data riwayat nilai untuk materi yang sedang aktif
+const currentLessonScores = computed(() => {
+  return quizHistory.value[activeLesson.value] || []
+})
+
+const highestScore = computed(() => {
+  if (currentLessonScores.value.length === 0) return 0
+  return Math.max(...currentLessonScores.value.map(s => s.score))
+})
+// ==========================================
 </script>
 
 <template>
@@ -522,6 +589,7 @@ watch(
 
               <!-- TABS NAVIGATION -->
               <div class="flex gap-6 border-b border-slate-200 mb-8 mt-2">
+                <!-- Tab 1: Materi -->
                 <button
                   @click="activeTab = 'materi'"
                   :class="[
@@ -531,6 +599,7 @@ watch(
                 >
                   {{ mainTabLabel }}
                 </button>
+                <!-- Tab 2: Media -->
                 <button
                   @click="activeTab = 'media'"
                   :class="[
@@ -539,6 +608,18 @@ watch(
                   ]"
                 >
                   🎧 Media & Referensi
+                </button>
+
+                <!-- TAB BARU: Nilai (Hanya muncul untuk kuis/asesmen) -->
+                <button
+                  v-if="['practice', 'challenge', 'sumative'].includes(currentLessonData.type)"
+                  @click="activeTab = 'nilai'"
+                  :class="[
+                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200 whitespace-nowrap', 
+                    activeTab === 'nilai' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
+                  ]"
+                >
+                  🏅 Riwayat Nilai
                 </button>
               </div>
 
@@ -667,6 +748,67 @@ watch(
                   <span class="text-4xl block mb-3">📭</span>
                   <p class="text-slate-500 font-medium">Belum ada media audio/visual untuk sesi ini.</p>
                   <p class="text-sm text-slate-400 mt-1">Silakan fokus pada tab Materi Utama.</p>
+                </div>
+
+              </div>
+
+              <!-- TAB 3: RIWAYAT NILAI -->
+              <div v-show="activeTab === 'nilai'" class="space-y-6">
+                
+                <div v-if="currentLessonScores.length > 0">
+                  <!-- Banner Status Akhir -->
+                  <div :class="[
+                    'p-5 rounded-2xl border flex items-center justify-between mb-8',
+                    highestScore >= 70 ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'
+                  ]">
+                    <div>
+                      <p class="text-sm font-medium text-slate-600 mb-1">Status Pencapaian Akhir</p>
+                      <h3 :class="['text-xl font-bold', highestScore >= 70 ? 'text-emerald-700' : 'text-rose-700']">
+                        {{ highestScore >= 70 ? '🎉 TUNTAS (KOMPETEN)' : '⚠️ BELUM TUNTAS' }}
+                      </h3>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-medium text-slate-600 mb-1">Nilai Tertinggi</p>
+                      <p class="text-3xl font-black text-slate-900">{{ highestScore }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Tabel Riwayat -->
+                  <h4 class="text-lg font-bold text-slate-900 mb-4">Riwayat Percobaan</h4>
+                  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                    <table class="w-full text-left text-sm text-slate-600">
+                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                        <tr>
+                          <th class="px-4 py-3 font-semibold">Percobaan Ke-</th>
+                          <th class="px-4 py-3 font-semibold">Tanggal & Waktu</th>
+                          <th class="px-4 py-3 font-semibold">Skor</th>
+                          <th class="px-4 py-3 font-semibold">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100">
+                        <tr v-for="(attempt, index) in currentLessonScores" :key="index" class="hover:bg-slate-50/50">
+                          <td class="px-4 py-3 font-medium text-slate-900">#{{ index + 1 }}</td>
+                          <td class="px-4 py-3">{{ new Date(attempt.date).toLocaleString('id-ID') }}</td>
+                          <td class="px-4 py-3 font-bold text-slate-700">{{ attempt.score }}</td>
+                          <td class="px-4 py-3">
+                            <span :class="[
+                              'px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-md',
+                              attempt.isPassed ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
+                            ]">
+                              {{ attempt.isPassed ? 'Lulus' : 'Remedial' }}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Kondisi jika belum ada nilai -->
+                <div v-else class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+                  <span class="text-4xl block mb-3">📝</span>
+                  <p class="text-slate-600 font-bold">Belum Ada Nilai</p>
+                  <p class="text-sm text-slate-500 mt-1">Kamu belum pernah menyelesaikan kuis/asesmen ini. Kerjakan sekarang di tab Materi Utama!</p>
                 </div>
 
               </div>

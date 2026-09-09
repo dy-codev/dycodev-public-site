@@ -381,6 +381,13 @@
             const totalQ = activeQuestions.length;
             const finalScore = Math.round((score / totalQ) * 100);
             scoreTextElement.innerText = `Skor Anda: ${finalScore} / 100\n(${score} benar dari ${totalQ} soal)`;
+
+            // --- KODE BARU: Kirim nilai ke aplikasi Vue (Parent) ---
+            window.parent.postMessage({
+                type: 'QUIZ_FINISHED',
+                score: finalScore
+            }, '*');
+            // --------------------------------------------------------
         }
 
         // Jalankan kuis saat halaman dimuat

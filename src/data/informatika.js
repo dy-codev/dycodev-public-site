@@ -176,7 +176,7 @@ export const informatikaSyllabusData = [
     lessons: [
       {
         id: 201,
-        title: 'Prengkat Keras Komputer',
+        title: 'Perangkat Keras Komputer',
         type: 'theory',
         duration: '2 JP',
         isCompleted: false,
@@ -188,20 +188,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: 'https://www.youtube.com/watch?v=gxmTFXfrMzk',
-        markdownUrl: '/materi/informatika/prengkat-keras-komputer.md',
-        content: `
-            <h3>Apa itu Variabel?</h3>
-            <p>Bayangkan variabel seperti sebuah kotak kontainer di kargo. Kotak tersebut memiliki nama (label) dan isi di dalamnya. Di Python, kita tidak perlu mendeklarasikan tipe kotaknya di awal.</p>
-          
-            <pre><code># Contoh membuat variabel
-kode_penerbangan = "JT-610"
-jumlah_penumpang = 180
-berat_bagasi_kg = 25.5</code></pre>
-
-            <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-5 my-6">
-                <h4 class="text-blue-800 m-0 mb-2 flex items-center gap-2">💡 Insight Industri</h4>
-                <p class="text-blue-900 text-sm m-0">Dalam rekayasa perangkat lunak nyata, penamaan variabel (*naming convention*) sangat krusial. Gunakan format <code>snake_case</code> untuk Python agar kode mudah dibaca oleh tim QA maupun developer lain.</p>
-            </div>`
+        markdownUrl: '/materi/informatika/perangkat-keras-komputer.md',
+        content: `<h3>Apa itu Variable</h3>`,
       },
       {
         id: 202,
