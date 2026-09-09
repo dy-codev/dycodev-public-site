@@ -23,20 +23,30 @@ export const informatikaSyllabusData = [
       },
       {
         id: 102,
-        title: 'Quiz',
+        title: 'Mini Project: Webinar',
         type: 'practice',
         duration: '1 JP',
         isCompleted: false,
         externalVideoUrl: null,
         externalLinks: [
-          { title: null, url: null, type: null },
+          { title: 'Panduan Mini Project: Webinar', url: 'https://docs.google.com/document/d/e/2PACX-1vSoHrA4xSs5-helhfShTDynr9PZpPV-SorsZKHWHIZWKPlTSkH3SXjkVGKAcLpbYg/pub', type: 'Docs' },
           { title: null, url: null, type: null }
         ],
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/quiz.md',
-        content: null
+        practiceUrl: null,
+        markdownUrl: null,
+        content: `
+        <p>Pada tugas kali ini, kalian tidak hanya belajar materi secara teori, tetapi akan langsung berperan sebagai penyelenggara Webinar / Pertemuan Daring.</p>
+        <ol>
+          <li>Jumlah anggota 6 orang per kelompok.</li>
+          <li>Pilih tools yang ingin anda gunakan sesuai kemampuan masing-masing kelompok.</li>
+          <li>Setiap orang akan memiliki peran dan tanggung jawab yang spesifik.</li>
+          <li>Detail dan output yang diharapkan dari mini project ini dapat dilihat pada Tab Media & Referensi</li>
+        </ol>
+        <p>Setelah mini project ini, diskusikan: aplikasi mana yang terasa paling efisien untuk tiap kebutuhan, dan kendala apa yang muncul saat mengelola beberapa aplikasi sekaligus?</p>
+        `
       },
       {
         id: 103,
@@ -207,7 +217,7 @@ berat_bagasi_kg = 25.5</code></pre>
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        quizUrl: '/kuis/informatika/kuis-hardware.html',
+        practiceUrl: '/kuis/informatika/kuis-hardware.html',
         markdownUrl: '/materi/informatika/quiz-mengenal-perangkat-keras.md',
         content: `
             <h3>Uji Pemahaman Hardware</h3>

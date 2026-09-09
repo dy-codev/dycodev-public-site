@@ -317,32 +317,41 @@ watch(
   async (newLesson) => {
     if (!newLesson) return;
 
-    // Skenario 1: Jika materi ini menggunakan Markdown (.md)
-    if (newLesson.markdownUrl) {
+    // PRIORITAS 1: Cek apakah ada format string HTML lama (Backward compatibility)
+    if (newLesson.content && newLesson.content.trim() !== '') {
+      renderedContent.value = newLesson.content;
+      isLoadingContent.value = false;
+    } 
+    // PRIORITAS 2: Jika tidak ada HTML, cek apakah ada file Markdown
+    else if (newLesson.markdownUrl) {
       isLoadingContent.value = true
       try {
         const response = await fetch(newLesson.markdownUrl)
-        if (!response.ok) throw new Error('File tidak ditemukan')
+        
+        // PASTIKAN responsenya benar-benar sukses dan bukan halaman HTML (biasanya Vite 404 fallback mengembalikan content-type text/html)
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || (contentType && contentType.includes("text/html"))) {
+            throw new Error('File Markdown tidak ditemukan atau belum dibuat');
+        }
         
         const rawText = await response.text()
-        renderedContent.value = marked.parse(rawText) // Ubah MD ke HTML
+        renderedContent.value = marked.parse(rawText) 
       } catch (error) {
         console.error("Gagal memuat markdown:", error)
-        renderedContent.value = '<div class="p-4 bg-red-50 text-red-600 rounded-lg">Gagal memuat materi teks.</div>'
+        renderedContent.value = `
+          <div class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
+            <strong>Materi Belum Tersedia:</strong> File markdown untuk sesi ini belum diunggah oleh instruktur.
+          </div>`
       } finally {
         isLoadingContent.value = false
       }
     } 
-    // Skenario 2: Jika masih menggunakan format string HTML lama (Backward compatibility)
-    else if (newLesson.content) {
-      renderedContent.value = newLesson.content
-    } 
-    // Skenario 3: Kosong
+    // PRIORITAS 3: Kosong
     else {
       renderedContent.value = ''
     }
   }, 
-  { immediate: true } // Langsung jalankan saat komponen pertama kali dimuat
+  { immediate: true } 
 )
 </script>
 
@@ -561,11 +570,11 @@ watch(
                   </iframe>
                 </div>
 
-                <!-- Tempat Kuis Interaktif HTML (Otomatis muncul jika quizUrl tersedia) -->
-                <div v-if="currentLessonData.quizUrl" class="w-full min-h-[650px] mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+                <!-- Tempat Kuis Interaktif HTML (Otomatis muncul jika practiceUrl tersedia) -->
+                <div v-if="currentLessonData.practiceUrl" class="w-full min-h-[650px] mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
                   <iframe 
                     class="w-full h-full min-h-[650px]"
-                    :src="currentLessonData.quizUrl" 
+                    :src="currentLessonData.practiceUrl" 
                     title="Kuis Interaktif" 
                     frameborder="0" 
                     allowfullscreen>
