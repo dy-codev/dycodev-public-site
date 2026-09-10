@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Perangkat Lunak Komputer - Kelas X SMK</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 200px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .image-container svg {
+            max-width: 100%;
+            max-height: 100%;
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .question {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .btn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-grid-img {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #ffffff;
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 12px 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .btn:hover:not([disabled]) {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+
+        .btn-img-option {
+            background-color: #ffffff;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 10px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            gap: 10px;
+        }
+
+        .btn-img-option svg {
+            max-width: 60px;
+            max-height: 60px;
+            pointer-events: none;
+        }
+        
+        .btn-img-option span {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .btn-img-option:hover:not([disabled]) {
+            background-color: #ebf5fb;
+            border-color: #2980b9;
+        }
+
+        .btn.correct, .btn-img-option.correct {
+            background-color: #2ecc71 !important;
+            border-color: #2ecc71 !important;
+            color: #ffffff !important;
+        }
+        
+        .btn-img-option.correct span {
+            color: #ffffff !important;
+        }
+
+        .btn.wrong, .btn-img-option.wrong {
+            background-color: #e74c3c !important;
+            border-color: #e74c3c !important;
+            color: #ffffff !important;
+        }
+        
+        .btn-img-option.wrong span {
+            color: #ffffff !important;
+        }
+
+        .btn:disabled, .btn-img-option:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .footer-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .next-btn, .restart-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .next-btn:hover, .restart-btn:hover {
+            background-color: #1a252f;
+        }
+
+        .hide {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>Kuis Perangkat Lunak Komputer</h1>
+        <p class="subtitle">Sistem Komputer Kelas X SMK</p>
+
+        <div id="quiz-box">
+            <div class="image-container hide" id="svg-container">
+                <!-- SVG ditaruh di sini melalui JavaScript -->
+            </div>
+
+            <div class="question" id="question-text">Pertanyaan akan muncul di sini.</div>
+
+            <div class="btn-grid" id="answer-buttons">
+                <!-- Tombol jawaban diproduksi melalui JavaScript -->
+            </div>
+
+            <div class="footer-info">
+                <span id="progress">Soal 1 dari 10</span>
+                <button id="next-btn" class="next-btn hide" onclick="nextQuestion()">Lanjut</button>
+            </div>
+        </div>
+
+        <div id="result-box" class="hide">
+            <h2>Kuis Selesai!</h2>
+            <p id="score-text" style="font-size: 1.2rem; margin: 20px 0;"></p>
+            <button class="restart-btn" onclick="startQuiz()">Ulangi Kuis</button>
+        </div>
+    </div>
+
+    <script>
+        // SVG Sederhana untuk merepresentasikan logo/jenis perangkat lunak
+        const svgSoftware = {
+            windows: `<svg viewBox="0 0 100 100"><rect x="10" y="10" width="35" height="35" fill="#00adef"/><rect x="50" y="10" width="35" height="35" fill="#00adef"/><rect x="10" y="50" width="35" height="35" fill="#00adef"/><rect x="50" y="50" width="35" height="35" fill="#00adef"/></svg>`,
+            linux: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="30" ry="40" fill="#333"/><ellipse cx="50" cy="70" rx="25" ry="25" fill="#fff"/><circle cx="40" cy="35" r="5" fill="#fff"/><circle cx="60" cy="35" r="5" fill="#fff"/><polygon points="45,45 55,45 50,55" fill="#f39c12"/></svg>`,
+            macos: `<svg viewBox="0 0 100 100"><path d="M50,80 C30,80 20,60 20,40 C20,25 35,15 50,20 C65,15 80,25 80,40 C80,60 70,80 50,80 Z" fill="#7f8c8d"/><path d="M60,15 C55,20 50,20 50,10 C55,5 65,5 60,15 Z" fill="#7f8c8d"/><circle cx="75" cy="35" r="8" fill="#ecf0f1"/></svg>`,
+            chrome: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#e74c3c"/><path d="M50,50 L90,50 A40,40 0 0,1 15,70 Z" fill="#2ecc71"/><path d="M50,50 L15,70 A40,40 0 0,1 50,10 Z" fill="#f1c40f"/><circle cx="50" cy="50" r="18" fill="#fff"/><circle cx="50" cy="50" r="14" fill="#3498db"/></svg>`,
+            edge: `<svg viewBox="0 0 100 100"><path d="M50,10 C25,10 10,30 15,55 C20,80 45,90 70,80 C80,75 85,60 80,50 C75,40 60,45 55,55 C50,65 35,60 35,50 C35,35 55,30 75,35 C80,30 80,20 75,15 C65,10 55,10 50,10 Z" fill="#2980b9"/></svg>`,
+            safari: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#bdc3c7"/><circle cx="50" cy="50" r="35" fill="#3498db"/><polygon points="45,55 55,45 80,20 20,80" fill="#e74c3c"/><polygon points="45,55 55,45 20,80 80,20" fill="#ecf0f1"/></svg>`,
+            firefox: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#3498db"/><path d="M50,10 C75,10 90,30 85,55 C80,80 50,90 25,75 C40,80 60,70 65,55 C70,40 55,30 40,40 C35,30 35,15 50,10 Z" fill="#e67e22"/></svg>`,
+            gmail: `<svg viewBox="0 0 100 100"><rect x="15" y="25" width="70" height="50" rx="5" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/><polyline points="15,25 50,55 85,25" fill="none" stroke="#e74c3c" stroke-width="8"/><line x1="15" y1="75" x2="35" y2="55" stroke="#e74c3c" stroke-width="6"/><line x1="85" y1="75" x2="65" y2="55" stroke="#e74c3c" stroke-width="6"/></svg>`,
+            yahoo: `<svg viewBox="0 0 100 100"><rect x="15" y="25" width="70" height="50" rx="5" fill="#8e44ad"/><text x="50" y="60" font-family="Arial" font-size="30" font-weight="bold" font-style="italic" fill="#fff" text-anchor="middle">Y!</text></svg>`
+        };
+
+        const questions = [
+            {
+                type: 'multiple-choice',
+                question: "Perangkat lunak sistem yang berfungsi untuk mengelola perangkat keras komputer, sumber daya perangkat lunak, dan menyediakan layanan umum untuk program komputer disebut...",
+                answers: ["Aplikasi Penjelajah Internet", "Sistem Operasi", "Aplikasi Persuratan", "Hardware"],
+                correct: 1
+            },
+            {
+                type: 'multiple-choice',
+                question: "Sistem operasi apakah yang bersifat open source (gratis) dan memiliki keunggulan tidak rentan terhadap serangan virus?",
+                answers: ["Windows", "macOS", "Linux", "Microsoft Edge"],
+                correct: 2
+            },
+            {
+                type: 'multiple-choice',
+                question: "macOS merupakan sistem operasi yang dikembangkan oleh Apple Inc. Sistem operasi ini menggunakan kernel apa?",
+                answers: ["Kernel Linux", "Kernel Windows NT", "Kernel BSD", "Kernel Unix"],
+                correct: 2
+            },
+            {
+                type: 'identify-sw-from-function',
+                question: "Manakah di bawah ini yang BUKAN merupakan contoh dari Sistem Operasi?",
+                options: [
+                    { key: 'windows', label: 'Windows' },
+                    { key: 'linux', label: 'Ubuntu (Linux)' },
+                    { key: 'macos', label: 'macOS' },
+                    { key: 'chrome', label: 'Google Chrome' }
+                ],
+                correct: 3
+            },
+            {
+                type: 'multiple-choice',
+                question: "Aplikasi yang berfungsi untuk mencari dan menampilkan informasi dari situs web di internet dikenal sebagai...",
+                answers: ["Sistem Operasi", "Aplikasi Persuratan", "Aplikasi Penjelajah Internet (Browser)", "Search Engine"],
+                correct: 2
+            },
+            {
+                type: 'multiple-choice',
+                question: "Peramban (browser) apakah yang dikembangkan oleh Apple dan pertama kali muncul di Mac OS X Panther pada tahun 2003?",
+                answers: ["Google Chrome", "Safari", "Mozilla Firefox", "Microsoft Edge"],
+                correct: 1
+            },
+            {
+                type: 'identify-sw-from-function',
+                question: "Manakah aplikasi di bawah ini yang merupakan peramban situs web (browser) yang dikembangkan oleh Google?",
+                options: [
+                    { key: 'edge', label: 'Edge' },
+                    { key: 'firefox', label: 'Firefox' },
+                    { key: 'chrome', label: 'Chrome' },
+                    { key: 'safari', label: 'Safari' }
+                ],
+                correct: 2
+            },
+            {
+                type: 'identify-image',
+                svg: svgSoftware.firefox,
+                question: "Aplikasi penjelajah internet pada gambar di atas awalnya bernama Phoenix. Aplikasi ini adalah...",
+                answers: ["Mozilla Firefox", "Google Chrome", "Safari", "Microsoft Edge"],
+                correct: 0
+            },
+            {
+                type: 'multiple-choice',
+                question: "Aplikasi yang membantu pengguna untuk mengirim pesan elektronik (email) disebut...",
+                answers: ["Aplikasi Penjelajah Internet", "Aplikasi Persuratan", "Sistem Operasi", "Sosial Media"],
+                correct: 1
+            },
+            {
+                type: 'identify-sw-from-function',
+                question: "Manakah aplikasi di bawah ini yang termasuk dalam jenis Aplikasi Persuratan?",
+                options: [
+                    { key: 'gmail', label: 'Google Gmail' },
+                    { key: 'safari', label: 'Safari' },
+                    { key: 'windows', label: 'Windows' },
+                    { key: 'edge', label: 'Microsoft Edge' }
+                ],
+                correct: 0
+            }
+        ];
+
+        let activeQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const quizBox = document.getElementById('quiz-box');
+        const resultBox = document.getElementById('result-box');
+        const svgContainer = document.getElementById('svg-container');
+        const questionTextElement = document.getElementById('question-text');
+        const answerButtonsElement = document.getElementById('answer-buttons');
+        const nextButton = document.getElementById('next-btn');
+        const progressElement = document.getElementById('progress');
+        const scoreTextElement = document.getElementById('score-text');
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            activeQuestions = [...questions].sort(() => Math.random() - 0.5);
+            quizBox.classList.remove('hide');
+            resultBox.classList.add('hide');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            let currentQuestion = activeQuestions[currentQuestionIndex];
+            
+            progressElement.innerText = `Soal ${currentQuestionIndex + 1} dari ${activeQuestions.length}`;
+            questionTextElement.innerText = currentQuestion.question;
+
+            if (currentQuestion.type === 'multiple-choice') {
+                svgContainer.classList.add('hide');
+                answerButtonsElement.className = 'btn-grid';
+                currentQuestion.answers.forEach((answer, index) => {
+                    const button = document.createElement('button');
+                    button.innerText = answer;
+                    button.classList.add('btn');
+                    button.addEventListener('click', () => selectAnswer(index));
+                    answerButtonsElement.appendChild(button);
+                });
+            } else if (currentQuestion.type === 'identify-image') {
+                svgContainer.classList.remove('hide');
+                svgContainer.innerHTML = currentQuestion.svg;
+                
+                answerButtonsElement.className = 'btn-grid';
+                currentQuestion.answers.forEach((answer, index) => {
+                    const button = document.createElement('button');
+                    button.innerText = answer;
+                    button.classList.add('btn');
+                    button.addEventListener('click', () => selectAnswer(index));
+                    answerButtonsElement.appendChild(button);
+                });
+            } else if (currentQuestion.type === 'identify-sw-from-function') {
+                svgContainer.classList.add('hide');
+                
+                answerButtonsElement.className = 'btn-grid-img';
+                currentQuestion.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.classList.add('btn-img-option');
+                    button.innerHTML = `${svgSoftware[option.key]}<span>${option.label}</span>`;
+                    button.addEventListener('click', () => selectAnswer(index));
+                    answerButtonsElement.appendChild(button);
+                });
+            }
+        }
+
+        function resetState() {
+            nextButton.classList.add('hide');
+            while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild);
+            }
+        }
+
+        function selectAnswer(selectedIndex) {
+            const currentQuestion = activeQuestions[currentQuestionIndex];
+            const buttons = answerButtonsElement.querySelectorAll('button');
+
+            buttons.forEach((button, index) => {
+                button.disabled = true;
+                if (index === currentQuestion.correct) {
+                    button.classList.add('correct');
+                }
+                if (index === selectedIndex && selectedIndex !== currentQuestion.correct) {
+                    button.classList.add('wrong');
+                }
+            });
+
+            if (selectedIndex === currentQuestion.correct) {
+                score++;
+            }
+
+            nextButton.classList.remove('hide');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < activeQuestions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizBox.classList.add('hide');
+            resultBox.classList.remove('hide');
+            const totalQ = activeQuestions.length;
+            const finalScore = Math.round((score / totalQ) * 100);
+            scoreTextElement.innerText = `Skor Anda: ${finalScore} / 100\n(${score} benar dari ${totalQ} soal)`;
+
+            window.parent.postMessage({
+                type: 'QUIZ_FINISHED',
+                score: finalScore
+            }, '*');
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>

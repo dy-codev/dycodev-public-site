@@ -220,7 +220,7 @@ export const informatikaSyllabusData = [
         isCompleted: false,
         externalVideoUrl: null,
         externalLinks: [
-          { title: null, url: null, type: null },
+          { title: 'Informatika Untuk Kelas X SMK/MAK (Kusmadi)', url: 'https://drive.google.com/file/d/1_wUwkpwcbPalSU7LFH3sVR_8Ck1dLKE4/preview', type: 'pdf' },
           { title: null, url: null, type: null }
         ],
         pdfUrl: null,
@@ -231,7 +231,7 @@ export const informatikaSyllabusData = [
       },
       {
         id: 204,
-        title: 'Hands-on: Instalasi OS',
+        title: 'Quiz: Mengenal Perangkat Lunak Komputer',
         type: 'practice',
         duration: '2.5 JP',
         isCompleted: false,
@@ -243,8 +243,12 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
+        practiceUrl: '/kuis/informatika/kuis-software.html',
         markdownUrl: '/materi/informatika/hands-on-instalasi-os.md',
-        content: null
+        content: `
+          <h3>Uji Pemahaman Software</h3>
+          <p>Setelah kalian membaca materi perangkat lunak komputer, silakan kerjakan kuis interaktif di bawah ini untuk menguji pemahamanmu mengenai perangkat lunak komputer.</p>
+          `
       },
       {
         id: 205,
