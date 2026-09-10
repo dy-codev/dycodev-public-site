@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+// import { currentUser, initAuth, logout, getNisnFromUser } from '../composables/useAuth.js'
 import { marked } from 'marked'
+import { supabase } from '../supabase.js'
+import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { gamtekSyllabusData } from '../data/gamtek.js'
@@ -64,42 +67,71 @@ const subjectMeta = ref({
   totalMeetings: activeCourse.totalMeetings
 })
 
-// Fungsi untuk memuat data awal silabus sekaligus menggabungkannya dengan Local Storage
-const getInitialSyllabus = () => {
-  // Ambil data master, lalu gandakan secara mendalam (deep clone) agar
-  // perubahan state isCompleted tidak mengotori file aslinya
-  const baseSyllabus = JSON.parse(JSON.stringify(activeCourse.syllabus))
+// Inisialisasi dasar silabus secara utuh dari file JS
+const syllabus = ref(JSON.parse(JSON.stringify(activeCourse.syllabus)))
 
-  // Ambil data yang tersimpan di browser
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
+// FUNGSI LOAD PROGRESS (HIBRIDA)
+const loadProgress = async () => {
+  let completedIds = []
 
-    if (saved !== null) {
-      const completedIds = JSON.parse(saved)
-      baseSyllabus.forEach(mod => {
-        mod.lessons.forEach(lesson => {
-          lesson.isCompleted = completedIds.includes(lesson.id)
-        })
-      })
-    } else {
-      const initialCompletedIds = []
-      baseSyllabus.forEach(mod => {
-        mod.lessons.forEach(lesson => {
-          if (lesson.isCompleted) initialCompletedIds.push(lesson.id)
-        })
-      })
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initialCompletedIds))
+  if (currentUser.value) {
+    // --- MODE SUPABASE (LOGIN) ---
+    try {
+      const { data, error } = await supabase
+        .from('course_progress')
+        .select('completed_lessons')
+        .eq('subject_key', subjectKey)
+        .eq('student_email', currentUser.value.email)
+        .single() // Karena kolomnya unik, ambil 1 baris saja
+        
+      if (data) completedIds = data.completed_lessons
+    } catch (e) {
+      // Jika error 'PGRST116', artinya data murid ini belum ada di tabel, abaikan saja
     }
-  } catch (e) {
-    console.error("Gagal memuat progress dari localStorage", e)
+  } else {
+    // --- MODE GUEST (LOCAL STORAGE) ---
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved !== null) completedIds = JSON.parse(saved)
   }
 
-  return baseSyllabus
-
+  // Terapkan data yang didapat (dari DB atau Lokal) ke centang UI
+  syllabus.value.forEach(mod => {
+    mod.lessons.forEach(lesson => {
+      lesson.isCompleted = completedIds.includes(lesson.id)
+    })
+  })
 }
 
-// Inisialisasi reaktif langsung memanggil fungsi pemuat data
-const syllabus = ref(getInitialSyllabus())
+// FUNGSI SAVE PROGRESS (HIBRIDA)
+const saveProgress = async () => {
+  try {
+    const completedIds = []
+    syllabus.value.forEach(mod => {
+      mod.lessons.forEach(lesson => {
+        if (lesson.isCompleted) completedIds.push(lesson.id)
+      })
+    })
+
+    if (currentUser.value) {
+      // --- MODE SUPABASE (LOGIN) ---
+      const { error } = await supabase
+        .from('course_progress')
+        .upsert({
+          student_email: currentUser.value.email,
+          subject_key: subjectKey,
+          completed_lessons: completedIds,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'student_email, subject_key' }) // Timpa data lama
+        
+      if (error) throw error
+    } else {
+      // --- MODE GUEST (LOCAL STORAGE) ---
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds))
+    }
+  } catch (e) {
+    console.error("Gagal menyimpan progress", e)
+  }
+}
 
 // Fungsi penentu materi pertama secara dinamis
 const getFirstLessonId = () => {
@@ -114,20 +146,20 @@ const activeLesson = ref(getFirstLessonId())
 
 const activeTab = ref('materi')
 
-// Simpan status progress ke Local Storage
-const saveProgress = () => {
-  try {
-    const completedIds = []
-    syllabus.value.forEach(mod => {
-      mod.lessons.forEach(lesson => {
-        if (lesson.isCompleted) completedIds.push(lesson.id)
-      })
-    })
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds))
-  } catch (e) {
-    console.error("Gagal menyimpan progress", e)
-  }
-}
+// // Simpan status progress ke Local Storage
+// const saveProgress = () => {
+//   try {
+//     const completedIds = []
+//     syllabus.value.forEach(mod => {
+//       mod.lessons.forEach(lesson => {
+//         if (lesson.isCompleted) completedIds.push(lesson.id)
+//       })
+//     })
+//     localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds))
+//   } catch (e) {
+//     console.error("Gagal menyimpan progress", e)
+//   }
+// }
 
 const toggleModule = (id) => {
   const module = syllabus.value.find(m => m.id === id)
@@ -357,36 +389,124 @@ watch(
 // ==========================================
 // FITUR RIWAYAT NILAI KUIS
 // ==========================================
+// const QUIZ_STORAGE_KEY = `dycodev_quiz_scores_${subjectKey}`
+// const quizHistory = ref({})
+
+// // Fungsi memuat riwayat nilai dari Local Storage
+// const loadQuizHistory = () => {
+//   try {
+//     const saved = localStorage.getItem(QUIZ_STORAGE_KEY)
+//     if (saved) quizHistory.value = JSON.parse(saved)
+//   } catch (e) {
+//     console.error("Gagal memuat riwayat nilai", e)
+//   }
+// }
+
+// // Fungsi menyimpan riwayat nilai
+// const saveQuizScore = (score) => {
+//   const lessonId = activeLesson.value
+  
+//   if (!quizHistory.value[lessonId]) {
+//     quizHistory.value[lessonId] = []
+//   }
+
+//   // Tambahkan data tes baru
+//   quizHistory.value[lessonId].push({
+//     date: new Date().toISOString(),
+//     score: score,
+//     isPassed: score >= 70 // KKM disetel 70, ubah sesuai standar Anda
+//   })
+
+//   // Simpan ke Local Storage
+//   localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(quizHistory.value))
+// }
+
+// ==========================================
+// FITUR RIWAYAT NILAI KUIS (HIBRIDA)
+// ==========================================
 const QUIZ_STORAGE_KEY = `dycodev_quiz_scores_${subjectKey}`
 const quizHistory = ref({})
 
-// Fungsi memuat riwayat nilai dari Local Storage
-const loadQuizHistory = () => {
-  try {
-    const saved = localStorage.getItem(QUIZ_STORAGE_KEY)
-    if (saved) quizHistory.value = JSON.parse(saved)
-  } catch (e) {
-    console.error("Gagal memuat riwayat nilai", e)
+// FUNGSI LOAD KUIS (HIBRIDA)
+const loadQuizHistory = async () => {
+  if (currentUser.value) {
+    // --- MODE SUPABASE ---
+    try {
+      const { data, error } = await supabase
+        .from('quiz_scores')
+        .select('*')
+        .eq('subject_key', subjectKey)
+        .eq('student_name', currentUser.value.email)
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+
+      if (data) {
+        const historyMap = {}
+        data.forEach(item => {
+          if (!historyMap[item.lesson_id]) historyMap[item.lesson_id] = []
+          historyMap[item.lesson_id].push({
+            date: item.created_at,
+            score: item.score,
+            isPassed: item.is_passed
+          })
+        })
+        quizHistory.value = historyMap
+      }
+    } catch (e) {
+      console.error("Gagal memuat riwayat kuis dari Supabase", e)
+    }
+  } else {
+    // --- MODE GUEST ---
+    try {
+      const saved = localStorage.getItem(QUIZ_STORAGE_KEY)
+      if (saved) quizHistory.value = JSON.parse(saved)
+    } catch (e) {
+      console.error("Gagal memuat riwayat nilai lokal", e)
+    }
   }
 }
 
-// Fungsi menyimpan riwayat nilai
-const saveQuizScore = (score) => {
+// FUNGSI SAVE KUIS (HIBRIDA)
+const saveQuizScore = async (score) => {
   const lessonId = activeLesson.value
-  
+  const isPassed = score >= 70
+
+  // 1. Update antarmuka (Vue State) seketika tanpa loading lama
   if (!quizHistory.value[lessonId]) {
     quizHistory.value[lessonId] = []
   }
-
-  // Tambahkan data tes baru
   quizHistory.value[lessonId].push({
     date: new Date().toISOString(),
     score: score,
-    isPassed: score >= 70 // KKM disetel 70, ubah sesuai standar Anda
+    isPassed: isPassed
   })
 
-  // Simpan ke Local Storage
-  localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(quizHistory.value))
+  // 2. Simpan datanya di balik layar
+  if (currentUser.value) {
+    // --- MODE SUPABASE ---
+    try {
+      const { error } = await supabase
+        .from('quiz_scores')
+        .insert([
+          {
+            student_name: currentUser.value.email, // Kita simpan emailnya ke kolom ini
+            subject_key: subjectKey,
+            lesson_id: lessonId,
+            score: score,
+            is_passed: isPassed
+          }
+        ])
+      if (error) throw error
+    } catch (e) {
+      console.error("Gagal menyimpan kuis ke Supabase", e)
+    }
+  } else {
+    // --- MODE GUEST ---
+    localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(quizHistory.value))
+  }
+
+  activeTab.value = 'nilai'
 }
 
 // Listener untuk menangkap pesan dari iframe HTML
@@ -400,7 +520,12 @@ const handleIframeMessage = (event) => {
 }
 
 // Pasang 'telinga' saat komponen dimuat
-onMounted(() => {
+onMounted(async () => {
+  // TUNGGU sampai status login dipastikan dari browser cookies/session
+  await initAuth()
+  
+  // Setelah tahu dia Login atau Guest, baru tarik datanya!
+  loadProgress()
   loadQuizHistory()
   window.addEventListener('message', handleIframeMessage)
 })
@@ -459,6 +584,20 @@ const highestScore = computed(() => {
             <div class="h-full bg-indigo-500 rounded-full transition-all duration-300" :style="`width: ${calculatedProgress}%`"></div>
           </div>
           <span class="text-slate-700">{{ calculatedProgress }}%</span>
+        </div>
+        <!-- Profil User / Logout -->
+        <div class="h-6 w-px bg-slate-200 hidden md:block"></div> <!-- Pemisah Vertikal -->
+    
+        <div v-if="currentUser" class="flex items-center gap-3">
+          <div class="flex items-center gap-2 text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+            <span>👤</span>
+            <span class="hidden sm:inline">{{ getDisplayName() }}</span>
+          </div>
+          <button @click="logout" title="Keluar" class="text-sm p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
 
