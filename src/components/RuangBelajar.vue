@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
-// import { currentUser, initAuth, logout, getNisnFromUser } from '../composables/useAuth.js'
 import { marked } from 'marked'
 import { supabase } from '../supabase.js'
 import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
@@ -146,21 +145,6 @@ const activeLesson = ref(getFirstLessonId())
 
 const activeTab = ref('materi')
 
-// // Simpan status progress ke Local Storage
-// const saveProgress = () => {
-//   try {
-//     const completedIds = []
-//     syllabus.value.forEach(mod => {
-//       mod.lessons.forEach(lesson => {
-//         if (lesson.isCompleted) completedIds.push(lesson.id)
-//       })
-//     })
-//     localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds))
-//   } catch (e) {
-//     console.error("Gagal menyimpan progress", e)
-//   }
-// }
-
 const toggleModule = (id) => {
   const module = syllabus.value.find(m => m.id === id)
   if (module) module.isOpen = !module.isOpen
@@ -261,7 +245,7 @@ const lessonBrief = computed(() => {
       return 'Pelajari konsep fundamental, dokumentasi, dan penjelasan terstruktur sebelum masuk ke sesi praktik.'
     case 'challenge':
     case 'practice':
-      return 'Waktunya hands-on! Terapkan langsung teori ke dalam baris kode untuk menguji pemahaman logismu.'
+      return 'Waktunya hands-on! Terapkan langsung dalam latihan untuk menguji pemahamanmu.'
     case 'project':
     case 'sumative':
       return 'Checkpoint / Penilaian akhir modul. Selesaikan tantangan komprehensif ini untuk mengukur pencapaian belajarmu.'
@@ -387,41 +371,6 @@ watch(
 )
 
 // ==========================================
-// FITUR RIWAYAT NILAI KUIS
-// ==========================================
-// const QUIZ_STORAGE_KEY = `dycodev_quiz_scores_${subjectKey}`
-// const quizHistory = ref({})
-
-// // Fungsi memuat riwayat nilai dari Local Storage
-// const loadQuizHistory = () => {
-//   try {
-//     const saved = localStorage.getItem(QUIZ_STORAGE_KEY)
-//     if (saved) quizHistory.value = JSON.parse(saved)
-//   } catch (e) {
-//     console.error("Gagal memuat riwayat nilai", e)
-//   }
-// }
-
-// // Fungsi menyimpan riwayat nilai
-// const saveQuizScore = (score) => {
-//   const lessonId = activeLesson.value
-  
-//   if (!quizHistory.value[lessonId]) {
-//     quizHistory.value[lessonId] = []
-//   }
-
-//   // Tambahkan data tes baru
-//   quizHistory.value[lessonId].push({
-//     date: new Date().toISOString(),
-//     score: score,
-//     isPassed: score >= 70 // KKM disetel 70, ubah sesuai standar Anda
-//   })
-
-//   // Simpan ke Local Storage
-//   localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(quizHistory.value))
-// }
-
-// ==========================================
 // FITUR RIWAYAT NILAI KUIS (HIBRIDA)
 // ==========================================
 const QUIZ_STORAGE_KEY = `dycodev_quiz_scores_${subjectKey}`
@@ -545,6 +494,20 @@ const highestScore = computed(() => {
   return Math.max(...currentLessonScores.value.map(s => s.score))
 })
 // ==========================================
+
+// Fungsi pembungkus untuk logout dan redirect
+const handleLogout = async () => {
+  try {
+    // 1. Lakukan proses logout ke Supabase
+    await logout()
+    
+    // 2. Tendang/arahkan pengguna kembali ke halaman utama
+    window.location.href = '/kelas-setara/'
+  } catch (error) {
+    console.error("Gagal melakukan logout:", error)
+    alert("Terjadi kesalahan saat mencoba keluar. Silakan coba lagi.")
+  }
+}
 </script>
 
 <template>
@@ -593,7 +556,7 @@ const highestScore = computed(() => {
             <span>👤</span>
             <span class="hidden sm:inline">{{ getDisplayName() }}</span>
           </div>
-          <button @click="logout" title="Keluar" class="text-sm p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+          <button @click="handleLogout" title="Keluar" class="text-sm p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
@@ -771,7 +734,7 @@ const highestScore = computed(() => {
                     class="w-full h-full"
                     :src="currentLessonData.slideUrl" 
                     title="Presentasi Materi" 
-                    frameborder="0" 
+                    frameborder="0" login
                     allowfullscreen="true" 
                     mozallowfullscreen="true" 
                     webkitallowfullscreen="true">
@@ -898,12 +861,12 @@ const highestScore = computed(() => {
                   <!-- Banner Status Akhir -->
                   <div :class="[
                     'p-5 rounded-2xl border flex items-center justify-between mb-8',
-                    highestScore >= 70 ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'
+                    highestScore >= 75 ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'
                   ]">
                     <div>
                       <p class="text-sm font-medium text-slate-600 mb-1">Status Pencapaian Akhir</p>
-                      <h3 :class="['text-xl font-bold', highestScore >= 70 ? 'text-emerald-700' : 'text-rose-700']">
-                        {{ highestScore >= 70 ? '🎉 TUNTAS (KOMPETEN)' : '⚠️ BELUM TUNTAS' }}
+                      <h3 :class="['text-xl font-bold', highestScore >= 75 ? 'text-emerald-700' : 'text-rose-700']">
+                        {{ highestScore >= 75 ? '🎉 TUNTAS (KOMPETEN)' : '⚠️ BELUM TUNTAS' }}
                       </h3>
                     </div>
                     <div class="text-right">

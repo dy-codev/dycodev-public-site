@@ -203,64 +203,50 @@ const displayCourses = computed(() => {
     <div class="max-w-6xl mx-auto">
       
       <!-- Header Section -->
-      <!-- <header class="mb-12 text-center md:text-left">
+      <header class="mb-12 text-center md:text-left">
         <div class="inline-block px-3 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-100 rounded-full">
           Knowledge For All
         </div>
         <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
           Kelas <span class="text-indigo-600">Setara</span>
         </h1>
-        <p class="text-lg text-slate-600 max-w-2xl leading-relaxed">
-          Ruang belajar terbuka untuk berbagi pengetahuan dan pengalaman, karena setiap orang berhak mendapatkan kesempatan untuk belajar.
-        </p>
-      </header> -->
-
-      <header class="mb-12 text-center md:text-left">
-  <div class="inline-block px-3 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-100 rounded-full">
-    Knowledge For All
-  </div>
-  <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-    Kelas <span class="text-indigo-600">Setara</span>
-  </h1>
   
-  <!-- Container untuk Tagline dan Auth UI -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
-    <p class="text-lg text-slate-600 max-w-2xl leading-relaxed m-0">
-      Ruang belajar terbuka untuk berbagi pengetahuan dan pengalaman, karena setiap orang berhak mendapatkan kesempatan untuk belajar.
-    </p>
+        <!-- Container untuk Tagline dan Auth UI -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+          <p class="text-lg text-slate-600 max-w-2xl leading-relaxed m-0">
+            Ruang belajar terbuka untuk berbagi pengetahuan dan pengalaman, karena setiap orang berhak mendapatkan kesempatan untuk belajar.
+          </p>
     
-    <!-- Area Auth (Tombol Login / Profil) -->
-    <div class="shrink-0 flex justify-center md:justify-end">
-      
-      <!-- Jika Belum Login -->
-      <button 
-        v-if="!currentUser" 
-        @click="openGeneralLogin" 
-        class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm shadow-indigo-600/20 flex items-center gap-2"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-        </svg>
-        Login Siswa
-      </button>
+          <!-- Area Auth (Tombol Login / Profil) -->
+          <div class="shrink-0 flex justify-center md:justify-end">
+            <!-- Jika Belum Login -->
+            <button 
+              v-if="!currentUser" 
+              @click="openGeneralLogin" 
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm shadow-indigo-600/20 flex items-center gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+                Login Siswa
+            </button>
 
-      <!-- Jika Sudah Login -->
-      <div v-else class="flex items-center gap-3">
-        <div class="flex items-center gap-2 text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">
-          <span>👤</span>
-          <span>{{ getDisplayName() }}</span>
+            <!-- Jika Sudah Login -->
+            <div v-else class="flex items-center gap-3">
+              <div class="flex items-center gap-2 text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">
+                <span>👤</span>
+                <span>{{ getDisplayName() }}</span>
+              </div>
+              <button 
+                @click="logout" 
+                class="text-sm font-medium px-4 py-2 text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors"
+                >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
-        <button 
-          @click="logout" 
-          class="text-sm font-medium px-4 py-2 text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors"
-        >
-          Logout
-        </button>
-      </div>
-
-    </div>
-  </div>
-</header>
+      </header>
 
       <!-- Filter Tabs -->
       <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-200 pb-4">
@@ -285,7 +271,7 @@ const displayCourses = computed(() => {
           v-for="course in displayCourses"
           :key="course.id"
           class="group relative bg-white/70 backdrop-blur-md border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
-        >
+          >
           <div>
             <!-- Header Kartu -->
             <div class="flex items-center justify-between mb-4">
@@ -319,10 +305,10 @@ const displayCourses = computed(() => {
                     target="_blank"
                     rel="noopener noreferrer"
                     class="hover:text-indigo-600 transition-colors"
-                >
-                  <span>🤺 {{ course.practiceCount || 0 }} Latihan</span>
+                  >
+                  <span>🥋 {{ course.practiceCount || 0 }} Latihan</span>
                 </a>
-                <span v-else>🤺 {{ course.practiceCount || 0 }} Latihan</span>
+                <span v-else>🥋 {{ course.practiceCount || 0 }} Latihan</span>
               </div>
 
               <!-- Level otomatis terdorong ke paling kanan karena justify-between -->
@@ -332,7 +318,7 @@ const displayCourses = computed(() => {
             <button 
               @click="handleMulaiBelajar(course)"
               class="w-full py-2.5 px-4 bg-slate-900 hover:bg-indigo-600 text-white font-medium text-sm rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
-            >
+              >
               Mulai Belajar
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -345,97 +331,95 @@ const displayCourses = computed(() => {
   </section>
   
   <!-- SMART MODAL LOGIN -->
-<div v-if="isLoginModalOpen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-  <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm overflow-hidden relative border border-slate-200">
+  <div v-if="isLoginModalOpen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm overflow-hidden relative border border-slate-200">
     
-    <button @click="isLoginModalOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 p-1 rounded-full z-10">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-    </button>
+      <button @click="isLoginModalOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 p-1 rounded-full z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+      </button>
     
-    <div class="p-6">
-      <h3 class="text-xl font-bold text-slate-900 text-center mb-2">Akses Kelas</h3>
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-slate-900 text-center mb-2">Akses Kelas</h3>
       
-      <!-- Label Materi (Hanya muncul jika mengklik dari kartu materi) -->
-      <p v-if="selectedCourse" class="text-xs text-center text-slate-500 mb-6">
-        Materi: <span class="font-bold text-indigo-600">{{ selectedCourse.title }}</span>
-      </p>
-      <p v-else class="text-xs text-center text-slate-500 mb-6">
-        Masuk untuk menyimpan riwayat belajarmu
-      </p>
+        <!-- Label Materi (Hanya muncul jika mengklik dari kartu materi) -->
+        <p v-if="selectedCourse" class="text-xs text-center text-slate-500 mb-6">
+          Materi: <span class="font-bold text-indigo-600">{{ selectedCourse.title }}</span>
+        </p>
+        <p v-else class="text-xs text-center text-slate-500 mb-6">
+          Masuk untuk menyimpan riwayat belajarmu
+        </p>
 
-      <!-- TAB SWITCHER (Sembunyikan jika materi yang diklik adalah SPBN) -->
-      <div v-if="!selectedCourse || selectedCourse.tag !== 'SPBN Bekasi'" class="flex bg-slate-100 p-1 rounded-xl mb-6">
-        <button 
-          @click="loginMode = 'nisn'"
-          :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'nisn' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-        >
-          Siswa SPBN
-        </button>
-        <button 
-          @click="loginMode = 'email'"
-          :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'email' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-        >
-          Umum / Publik
-        </button>
-      </div>
+        <!-- TAB SWITCHER (Sembunyikan jika materi yang diklik adalah SPBN) -->
+        <div v-if="!selectedCourse || selectedCourse.tag !== 'SPBN Bekasi'" class="flex bg-slate-100 p-1 rounded-xl mb-6">
+          <button 
+            @click="loginMode = 'nisn'"
+            :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'nisn' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
+            >
+            Siswa SPBN
+          </button>
+          <button 
+            @click="loginMode = 'email'"
+            :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'email' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
+            >
+            Umum / Publik
+          </button>
+        </div>
       
-      <!-- PESAN ERROR -->
-      <div v-if="loginError" class="mb-4 p-3 bg-red-50 text-red-600 text-xs font-medium rounded-lg border border-red-100 flex items-start gap-2">
-        <span>⚠️</span> {{ loginError }}
-      </div>
+        <!-- PESAN ERROR -->
+        <div v-if="loginError" class="mb-4 p-3 bg-red-50 text-red-600 text-xs font-medium rounded-lg border border-red-100 flex items-start gap-2">
+          <span>⚠️</span> {{ loginError }}
+        </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-4">
+        <form @submit.prevent="handleLogin" class="space-y-4">
         
-        <!-- FORM NISN -->
-        <div v-if="loginMode === 'nisn'">
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Nomor Induk (NISN)</label>
-          <input v-model="loginForm.nisn" type="text" placeholder="Contoh: 1001" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-        </div>
+          <!-- FORM NISN -->
+          <div v-if="loginMode === 'nisn'">
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Nomor Induk (NISN)</label>
+            <input v-model="loginForm.nisn" type="text" placeholder="Contoh: 1001" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+          </div>
 
-        <!-- FORM EMAIL -->
-        <div v-if="loginMode === 'email'">
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Alamat Email</label>
-          <input v-model="loginForm.email" type="email" placeholder="nama@email.com" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-        </div>
+          <!-- FORM EMAIL -->
+          <div v-if="loginMode === 'email'">
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Alamat Email</label>
+            <input v-model="loginForm.email" type="email" placeholder="nama@email.com" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+          </div>
 
-        <!-- PASSWORD UMUM -->
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Password</label>
-          <input v-model="loginForm.password" type="password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-        </div>
+          <!-- PASSWORD UMUM -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Password</label>
+            <input v-model="loginForm.password" type="password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
+          </div>
 
-        <button type="submit" :disabled="isLoggingIn" class="w-full mt-2 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          {{ isLoggingIn ? 'Memverifikasi...' : 'Masuk' }}
-        </button>
-      </form>
-    </div>
+          <button type="submit" :disabled="isLoggingIn" class="w-full mt-2 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            {{ isLoggingIn ? 'Memverifikasi...' : 'Masuk' }}
+          </button>
+        </form>
+      </div>
 
-    <!-- AREA FOOTER MODAL (KONDISIONAL) -->
+      <!-- AREA FOOTER MODAL (KONDISIONAL) -->
     
-    <!-- 1. Jika diklik dari materi Publik -->
-    <div v-if="selectedCourse && selectedCourse.tag !== 'SPBN Bekasi'" class="bg-slate-50 p-4 border-t border-slate-100 text-center">
-      <p class="text-xs text-slate-500 mb-3">Tidak ingin menyimpan progress?</p>
-      <button @click="continueAsGuest" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
-        Lewati, Masuk sebagai Guest
-      </button>
-    </div>
+      <!-- 1. Jika diklik dari materi Publik -->
+      <div v-if="selectedCourse && selectedCourse.tag !== 'SPBN Bekasi'" class="bg-slate-50 p-4 border-t border-slate-100 text-center">
+        <p class="text-xs text-slate-500 mb-3">Tidak ingin menyimpan progress?</p>
+        <button @click="continueAsGuest" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
+          Lewati, Masuk sebagai Guest
+        </button>
+      </div>
 
-    <!-- 2. Jika diklik dari materi SPBN -->
-    <div v-else-if="selectedCourse && selectedCourse.tag === 'SPBN Bekasi'" class="bg-indigo-50 p-4 border-t border-indigo-100 text-center">
-      <p class="text-[11px] text-indigo-700 font-medium leading-tight m-0">
-        Materi ini bersifat privat untuk siswa <br>SMK Penerbangan Bakti Nusantara.
-      </p>
-    </div>
+      <!-- 2. Jika diklik dari materi SPBN -->
+      <div v-else-if="selectedCourse && selectedCourse.tag === 'SPBN Bekasi'" class="bg-indigo-50 p-4 border-t border-indigo-100 text-center">
+        <p class="text-[11px] text-indigo-700 font-medium leading-tight m-0">
+          Materi ini bersifat privat untuk siswa <br>SMK Penerbangan Bakti Nusantara.
+        </p>
+      </div>
 
-    <!-- 3. Jika diklik dari tombol Header (Bebas Eksplorasi) -->
-    <div v-else class="bg-slate-50 p-4 border-t border-slate-100 text-center">
-      <p class="text-xs text-slate-500 mb-3">Belum punya akun?</p>
-      <button @click="isLoginModalOpen = false" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
-        Eksplorasi Kelas Setara sebagai Guest
-      </button>
+      <!-- 3. Jika diklik dari tombol Header (Bebas Eksplorasi) -->
+      <div v-else class="bg-slate-50 p-4 border-t border-slate-100 text-center">
+        <p class="text-xs text-slate-500 mb-3">Belum punya akun?</p>
+        <button @click="isLoginModalOpen = false" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
+          Eksplorasi Kelas Setara sebagai Guest
+        </button>
+      </div>
     </div>
-
   </div>
-</div>
-
 </template>
