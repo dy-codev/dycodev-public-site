@@ -1,3 +1,4 @@
+// DYCODEV
 function postCarousel() {
   return {
       slides: [],
@@ -70,7 +71,6 @@ function postCarousel() {
 
 // expose ke global agar Alpine bisa akses
 window.postCarousel = postCarousel;
-
 
 
 // async function loadWP() {
