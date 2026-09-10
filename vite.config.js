@@ -21,7 +21,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         'kelas-setara': resolve(__dirname, 'kelas-setara/index.html'),
-        'ruang-belajar': resolve(__dirname, 'ruang-belajar/index.html'),
+        // 'ruang-belajar': resolve(__dirname, 'ruang-belajar/index.html'),
       },
     },
   },

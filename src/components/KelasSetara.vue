@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { currentUser, initAuth, loginWithNisn, loginWithEmail, logout, getDisplayName } from '../composables/useAuth.js'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
@@ -13,6 +14,8 @@ const loginForm = ref({ nisn: '', email: '', password: '' })
 const loginError = ref('')
 const isLoggingIn = ref(false)
 const selectedCourse = ref(null) // Menyimpan course apa yang sedang diklik
+
+const router = useRouter()
 
 onMounted(() => {
   initAuth()
@@ -32,7 +35,8 @@ const handleMulaiBelajar = (course) => {
     }
 
     // Jika lolos pengecekan otorisasi, luncurkan ke materi
-    window.location.href = course.link;
+    // window.location.href = course.link;
+    router.push(course.link);
   } else {
     // Jika belum login, buka modal spesifik untuk course ini
     selectedCourse.value = course;
@@ -61,7 +65,8 @@ const handleLogin = async () => {
     
     // Jika sukses, tutup modal dan lanjutkan perjalanan ke materi!
     isLoginModalOpen.value = false
-    window.location.href = selectedCourse.value.link
+    // window.location.href = selectedCourse.value.link
+    router.push(selectedCourse.value.link)
     
   } catch (error) {
     loginError.value = 'Kredensial tidak valid. Periksa kembali data Anda.'
@@ -84,7 +89,8 @@ const continueAsGuest = () => {
   isLoginModalOpen.value = false
   // Pastikan selectedCourse ada sebelum memanggil .link
   if (selectedCourse.value) {
-    window.location.href = selectedCourse.value.link;
+    // window.location.href = selectedCourse.value.link;
+    router.push(selectedCourse.value.link)
   }
 }
 
@@ -109,7 +115,7 @@ const courses = ref([
     level: 'Pemula',
     tag: 'SPBN Bekasi',
     icon: '💻',
-    link: '/ruang-belajar/?subject=informatika',
+    link: 'ruang-belajar/?subject=informatika',
     practiceLink: '#'
   },
   {
@@ -122,7 +128,7 @@ const courses = ref([
     tag: 'SPBN Bekasi',
     icon: '📐',
     // link: 'https://drive.google.com/drive/folders/1oB0gv3FnmG0n1MOPM6QQHHq9XbcojyEF?usp=sharing',
-    link: '/ruang-belajar/?subject=gamtek',
+    link: 'ruang-belajar/?subject=gamtek',
     practiceLink: 'https://drive.google.com/drive/folders/1Lk_OQfelBLp4fMFXpS0pIhSU3Q0JabbD?usp=sharing'
   },
   {
@@ -135,7 +141,7 @@ const courses = ref([
     level: 'Pemula - Menengah',
     tag: 'Umum',
     icon: '🌐',
-    link: '/ruang-belajar/?subject=webdev',
+    link: 'ruang-belajar/?subject=webdev',
     practiceLink: '#'
   },
   {
@@ -147,7 +153,7 @@ const courses = ref([
     level: 'Menengah',
     tag: 'Umum',
     icon: '⚙️',
-    link: '/ruang-belajar/?subject=backend',
+    link: 'ruang-belajar/?subject=backend',
     practiceLink: '#'
   },
   {
@@ -160,7 +166,7 @@ const courses = ref([
     level: 'Semua Tingkat',
     tag: 'Umum',
     icon: '🧪',
-    link: '/ruang-belajar/?subject=sqa',
+    link: 'ruang-belajar/?subject=sqa',
     practiceLink: '#'
   }
 ])
