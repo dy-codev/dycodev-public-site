@@ -1,15 +1,8 @@
-// import { defineConfig } from 'vite'
-// import tailwindcss from '@tailwindcss/vite'
-// export default defineConfig({
-//   plugins: [
-//     tailwindcss(),
-//   ],
-// })
-
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import fs from 'fs'
 
 export default defineConfig({
   plugins: [
@@ -26,6 +19,17 @@ export default defineConfig({
           }
           next()
         })
+      },
+      // 2. Trik Rahasia untuk Server Produksi (Cloudflare)
+      closeBundle() {
+        const indexPath = 'dist/kelas-setara/index.html'
+        const fallbackPath = 'dist/kelas-setara/404.html'
+        
+        // Setelah build selesai, gandakan index.html menjadi 404.html
+        if (fs.existsSync(indexPath)) {
+          fs.copyFileSync(indexPath, fallbackPath)
+          console.log('✅ File 404.html untuk direktori kelas-setara berhasil digandakan!')
+        }
       }
     }
   ],
