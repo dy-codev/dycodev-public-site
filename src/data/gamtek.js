@@ -1,3 +1,5 @@
+import { markRaw, defineAsyncComponent } from 'vue'
+
 export const gamtekSyllabusData = [
     {
       id: 1,
@@ -109,7 +111,7 @@ export const gamtekSyllabusData = [
     },
     {
         id: 3,
-        title: 'Sprint 3: Huruf, Angka, dan Notasi Gambar',
+        title: 'Sprint 3: Huruf, Angka, dan Dimensi Gambar',
         isOpen: false,
         lessons: [
             // {id: 301, title: '', type: 'theory', duration: '2 JP', isCompleted: false },
@@ -125,7 +127,7 @@ export const gamtekSyllabusData = [
             },
             { 
                 id: 303, 
-                title: 'Cara Memberikan Notasi Ukur', 
+                title: 'Ukuran/Dimensi Pada Gambar Teknik', 
                 type: 'theory', duration: '2 JP', 
                 isCompleted: false,
                 videoUrl: null,

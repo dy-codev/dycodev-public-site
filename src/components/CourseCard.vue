@@ -7,6 +7,12 @@ defineProps({
   }
 })
 
+// Helper untuk mendeteksi apakah string icon adalah file gambar (.png, .svg, .ico, dll)
+const isImageIcon = (icon) => {
+  if (!icon) return false
+  return icon.includes('.') || icon.startsWith('/') || icon.startsWith('http')
+}
+
 // Komponen ini bisa berteriak 'mulai-belajar' ke bapaknya saat tombol diklik
 defineEmits(['mulai-belajar'])
 </script>
@@ -15,9 +21,15 @@ defineEmits(['mulai-belajar'])
   <div class="group relative bg-white/70 backdrop-blur-md border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
     <div>
       <div class="flex items-center justify-between mb-4">
-        <span class="text-3xl p-3 bg-indigo-50/80 rounded-xl border border-indigo-100/50">
-          {{ course.icon }}
-        </span>
+        <!-- Render sebagai Gambar jika berupa file -->
+        <img 
+          v-if="isImageIcon(course.icon)" 
+          :src="course.icon" 
+          :alt="course.title" 
+          class="w-8 h-8 object-contain"
+        />
+        <!-- Render sebagai Emoji/Teks jika bukan file -->
+        <span v-else>{{ course.icon }}</span>
         <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">
           {{ course.tag }}
         </span>

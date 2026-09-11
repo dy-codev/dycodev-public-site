@@ -1,3 +1,5 @@
+import { markRaw, defineAsyncComponent } from 'vue'
+
 export const backendSyllabusData = [
   {
     id: 1,

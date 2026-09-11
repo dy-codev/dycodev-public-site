@@ -91,6 +91,19 @@ const courses = ref([
   },
   {
     id: 3,
+    title: 'RAMP Safety Awareness',
+    category: 'Airport Safety & Operations',
+    description: 'Panduan komprehensif keselamatan ground handling, identifikasi bahaya airside, dan prosedur kerja aman di sekitar pesawat.',
+    lessonsCount: 0,
+    practiceCount: 0,
+    level: 'Semua Tingkat',
+    tag: 'Umum',
+    icon: '/ico-airport.png',
+    link: 'ruang-belajar/?subject=rsa',
+    practiceLink: '#'
+  },
+  {
+    id: 4,
     title: 'Web Development Basics',
     category: 'Software Engineering',
     description: 'Belajar fondasi pembuatan web modern menggunakan HTML, CSS, JavaScript, dan framework interaktif.',
@@ -103,7 +116,7 @@ const courses = ref([
     practiceLink: '#'
   },
   {
-    id: 4,
+    id: 5,
     title: 'Backend Engineering',
     category: 'Software Engineering',
     description: 'Arsitektur REST API, manajemen basis data, dan pembuatan layanan backend yang scalable.',
@@ -115,7 +128,7 @@ const courses = ref([
     practiceLink: '#'
   },
   {
-    id: 5,
+    id: 6,
     title: 'Software Quality Assurance',
     category: 'Quality Assurance',
     description: 'Prinsip pengujian perangkat lunak, manual testing, penyusunan test case, dan otomatisasi pengujian.',
