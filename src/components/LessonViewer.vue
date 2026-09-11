@@ -5,8 +5,6 @@ defineProps({
   tabLabel: String,
   hasMedia: Boolean,
   externalLinks: Array,
-  renderedHtml: String,
-  isLoading: Boolean,
   scores: Array,
   bestScore: Number,
   activeTab: String
@@ -64,8 +62,22 @@ const getEmbedUrl = (url) => {
         <iframe class="w-full h-full min-h-[650px]" :src="lesson.practiceUrl" frameborder="0" allowfullscreen></iframe>
       </div>
       
-      <div v-if="isLoading" class="py-10 text-center text-slate-500 animate-pulse">Memuat materi teks...</div>
-      <div v-else v-html="renderedHtml"></div>
+      <!-- Konten Vue Markdown (Cara Baru) -->
+      <div v-if="lesson.component">
+        <component :is="lesson.component" />
+      </div>
+      <!-- Konten String HTML (Kecocokan Mundur untuk materi lama) -->
+      <div v-else-if="lesson.content" v-html="lesson.content"></div>
+      <!-- Fallback Jika Kosong -->
+      <!-- <div v-else-if="!lesson.slideUrl && !lesson.pdfUrl && !lesson.practiceUrl" class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
+        <strong>Materi Belum Tersedia:</strong> Konten untuk sesi ini belum diunggah oleh instruktur.
+      </div> -->
+      <!-- Fallback Elegan Jika Belum Ada Media/Materi Apapun -->
+      <div v-if="!lesson.component && !lesson.content && !lesson.slideUrl && !lesson.pdfUrl && !lesson.practiceUrl" class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+        <span class="text-4xl block mb-3">🚧</span>
+        <p class="text-slate-600 font-bold">Materi Belum Tersedia</p>
+        <p class="text-sm text-slate-500 mt-1">Modul untuk sesi ini sedang dalam tahap penyusunan oleh instruktur.</p>
+      </div>
     </div>
 
     <!-- TAB 2: MEDIA & REFERENSI -->
@@ -102,7 +114,7 @@ const getEmbedUrl = (url) => {
       </div>
 
       <div v-if="!hasMedia" class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
-        <span class="text-4xl block mb-3">📭</span>
+        <span class="text-4xl block mb-3">🎥</span>
         <p class="text-slate-500 font-medium">Belum ada media audio/visual untuk sesi ini.</p>
       </div>
     </div>

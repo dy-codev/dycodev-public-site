@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
-import { marked } from 'marked'
 import { supabase } from '../supabase.js'
 import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
 import SyllabusSidebar from './SyllabusSidebar.vue'
@@ -45,8 +44,8 @@ const coursesDB = {
 }
 
 // State baru untuk menampung hasil render teks
-const renderedContent = ref('')
-const isLoadingContent = ref(false)
+// const renderedContent = ref('')
+// const isLoadingContent = ref(false)
 
 // Ambil konfigurasi yang sesuai dengan URL saat ini
 const activeCourse = coursesDB[subjectKey] || {
@@ -69,7 +68,13 @@ const subjectMeta = ref({
 })
 
 // Inisialisasi dasar silabus secara utuh dari file JS
-const syllabus = ref(JSON.parse(JSON.stringify(activeCourse.syllabus)))
+// const syllabus = ref(JSON.parse(JSON.stringify(activeCourse.syllabus)))
+const syllabus = ref(
+  activeCourse.syllabus.map(mod => ({
+    ...mod,
+    lessons: mod.lessons.map(lesson => ({ ...lesson }))
+  }))
+)
 
 // FUNGSI LOAD PROGRESS (HIBRIDA)
 const loadProgress = async () => {
@@ -329,48 +334,48 @@ const completionButtonText = computed(() => {
   }
 })
 
-// Pantau setiap kali currentLessonData berubah (siswa klik materi lain)
-watch(
-  () => currentLessonData.value, 
-  async (newLesson) => {
-    if (!newLesson) return;
+// // Pantau setiap kali currentLessonData berubah (siswa klik materi lain)
+// watch(
+//   () => currentLessonData.value, 
+//   async (newLesson) => {
+//     if (!newLesson) return;
 
-    // PRIORITAS 1: Cek apakah ada format string HTML lama (Backward compatibility)
-    if (newLesson.content && newLesson.content.trim() !== '') {
-      renderedContent.value = newLesson.content;
-      isLoadingContent.value = false;
-    } 
-    // PRIORITAS 2: Jika tidak ada HTML, cek apakah ada file Markdown
-    else if (newLesson.markdownUrl) {
-      isLoadingContent.value = true
-      try {
-        const response = await fetch(newLesson.markdownUrl)
+//     // PRIORITAS 1: Cek apakah ada format string HTML lama (Backward compatibility)
+//     if (newLesson.content && newLesson.content.trim() !== '') {
+//       renderedContent.value = newLesson.content;
+//       isLoadingContent.value = false;
+//     } 
+//     // PRIORITAS 2: Jika tidak ada HTML, cek apakah ada file Markdown
+//     else if (newLesson.markdownUrl) {
+//       isLoadingContent.value = true
+//       try {
+//         const response = await fetch(newLesson.markdownUrl)
         
-        // PASTIKAN responsenya benar-benar sukses dan bukan halaman HTML (biasanya Vite 404 fallback mengembalikan content-type text/html)
-        const contentType = response.headers.get("content-type");
-        if (!response.ok || (contentType && contentType.includes("text/html"))) {
-            throw new Error('File Markdown tidak ditemukan atau belum dibuat');
-        }
+//         // PASTIKAN responsenya benar-benar sukses dan bukan halaman HTML (biasanya Vite 404 fallback mengembalikan content-type text/html)
+//         const contentType = response.headers.get("content-type");
+//         if (!response.ok || (contentType && contentType.includes("text/html"))) {
+//             throw new Error('File Markdown tidak ditemukan atau belum dibuat');
+//         }
         
-        const rawText = await response.text()
-        renderedContent.value = marked.parse(rawText) 
-      } catch (error) {
-        console.error("Gagal memuat markdown:", error)
-        renderedContent.value = `
-          <div class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
-            <strong>Materi Belum Tersedia:</strong> File markdown untuk sesi ini belum diunggah oleh instruktur.
-          </div>`
-      } finally {
-        isLoadingContent.value = false
-      }
-    } 
-    // PRIORITAS 3: Kosong
-    else {
-      renderedContent.value = ''
-    }
-  }, 
-  { immediate: true } 
-)
+//         const rawText = await response.text()
+//         renderedContent.value = marked.parse(rawText) 
+//       } catch (error) {
+//         console.error("Gagal memuat markdown:", error)
+//         renderedContent.value = `
+//           <div class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
+//             <strong>Materi Belum Tersedia:</strong> File markdown untuk sesi ini belum diunggah oleh instruktur.
+//           </div>`
+//       } finally {
+//         isLoadingContent.value = false
+//       }
+//     } 
+//     // PRIORITAS 3: Kosong
+//     else {
+//       renderedContent.value = ''
+//     }
+//   }, 
+//   { immediate: true } 
+// )
 
 // ==========================================
 // FITUR RIWAYAT NILAI KUIS (HIBRIDA)
@@ -622,8 +627,6 @@ const handleLogout = async () => {
               :tab-label="mainTabLabel"
               :has-media="hasMediaContent"
               :external-links="validExternalLinks"
-              :rendered-html="renderedContent"
-              :is-loading="isLoadingContent"
               :scores="currentLessonScores"
               :best-score="highestScore"
               :active-tab="activeTab"

@@ -3,11 +3,17 @@ import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import fs from 'fs'
+import Markdown from 'unplugin-vue-markdown/vite'
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    vue(),
+    vue({
+      include: [/\.vue$/, /\.md$/],
+    }),
+    Markdown({
+      // Opsional: Anda bisa menambahkan konfigurasi Markdown parser di sini nanti
+    }),
     {
       // Plugin kustom ringan untuk mengatur SPA Fallback
       name: 'kelas-setara-spa-fallback',

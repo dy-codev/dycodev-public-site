@@ -1,3 +1,5 @@
+import { markRaw, defineAsyncComponent } from 'vue'
+
 export const informatikaSyllabusData = [
   {
     id: 1,
@@ -18,7 +20,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/aplikasi-media-komunikasi.md',
+        // markdownUrl: '/materi/informatika/aplikasi-media-komunikasi.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/aplikasi-media-komunikasi.md'))),
         content: null
       },
       {
@@ -62,7 +65,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/mesin-pencari-informasi-digital.md',
+        // markdownUrl: '/materi/informatika/mesin-pencari-informasi-digital.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/mesin-pencari-informasi-digital.md'))),
         content: null
       },
       {
@@ -96,7 +100,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/fitur-lanjutan-aplikasi-perkantoran.md',
+        // markdownUrl: '/materi/informatika/fitur-lanjutan-aplikasi-perkantoran.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/fitur-lanjutan-aplikasi-perkantoran.md'))),
         content: null
       },
       {
@@ -130,7 +135,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/integrasi-aplikasi-office.md',
+        // markdownUrl: '/materi/informatika/integrasi-aplikasi-office.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/fitur-lanjutan-aplikasi-perkantoran.md'))),
         content: null
       },
       {
@@ -188,7 +194,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: 'https://www.youtube.com/watch?v=gxmTFXfrMzk',
-        markdownUrl: '/materi/informatika/perangkat-keras-komputer.md',
+        // markdownUrl: '/materi/informatika/perangkat-keras-komputer.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/fitur-lanjutan-aplikasi-perkantoran.md'))),
         content: `<h3>Apa itu Variable</h3>`,
       },
       {
@@ -226,7 +233,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/perangkat-lunak-komputer.md',
+        // markdownUrl: '/materi/informatika/perangkat-lunak-komputer.md',
+        component: markRaw(defineAsyncComponent(() => import('../materi/informatika/perangkat-lunak-komputer.md'))),
         content: null
       },
       {
@@ -264,7 +272,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengguna.md',
+        // markdownUrl: '/materi/informatika/pengguna.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengguna.md'))),
         content: null
       },
       {
@@ -298,7 +307,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/mekanisme-kinerja-internal-pada-komputer.md',
+        // markdownUrl: '/materi/informatika/mekanisme-kinerja-internal-pada-komputer.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/mekanisme-kinerja-internal-pada-komputer.md'))),
         content: null
       },
       {
@@ -320,7 +330,7 @@ export const informatikaSyllabusData = [
       },
       {
         id: 209,
-        title: 'Interaksi Antara Kmputer dan Pengguna',
+        title: 'Interaksi Antara Komputer dan Pengguna',
         type: 'theory',
         duration: '1 JP',
         isCompleted: false,
@@ -332,7 +342,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/interaksi-antara-kmputer-dan-pengguna.md',
+        // markdownUrl: '/materi/informatika/interaksi-antara-komputer-dan-pengguna.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/interaksi-antara-komputer-dan-pengguna.md'))),
         content: null
       },
       {
@@ -390,7 +401,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-jaringan-komputer.md',
+        // markdownUrl: '/materi/informatika/pengantar-jaringan-komputer.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-jaringan-komputer.md'))),
         content: null
       }
     ]
@@ -414,7 +426,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-analisis-data.md',
+        // markdownUrl: '/materi/informatika/pengantar-analisis-data.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-analisis-data.md'))),
         content: null
       }
     ]
@@ -438,7 +451,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-dampak-sosial-informatika.md',
+        // markdownUrl: '/materi/informatika/pengantar-dampak-sosial-informatika.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-dampak-sosial-informatika.md'))),
         content: null
       }
     ]
@@ -462,7 +476,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/penilaian-sas-ganjil.md',
+        // markdownUrl: '/materi/informatika/penilaian-sas-ganjil.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/penilaian-sas-ganjil.md'))),
         content: null
       }
     ]
@@ -486,7 +501,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-berpikir-komputasional.md',
+        // markdownUrl: '/materi/informatika/pengantar-berpikir-komputasional.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-berpikir-komputasional.md'))),
         content: null
       }
     ]
@@ -510,7 +526,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-algoritma-dan-pemrograman.md',
+        // markdownUrl: '/materi/informatika/pengantar-algoritma-dan-pemrograman.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-algoritma-dan-pemrograman.md'))),
         content: null
       }
     ]
@@ -534,7 +551,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/pengantar-praktik-lintas-bidang.md',
+        // markdownUrl: '/materi/informatika/pengantar-praktik-lintas-bidang.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/pengantar-praktik-lintas-bidang.md'))),
         content: null
       }
     ]
@@ -558,7 +576,8 @@ export const informatikaSyllabusData = [
         pdfUrl: null,
         slideUrl: null,
         videoUrl: null,
-        markdownUrl: '/materi/informatika/penilaian-sas-genap.md',
+        // markdownUrl: '/materi/informatika/penilaian-sas-genap.md',
+        // component: markRaw(defineAsyncComponent(() => import('../materi/informatika/penilaian-sas-genap.md'))),
         content: null
       }
     ]
