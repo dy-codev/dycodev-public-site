@@ -56,7 +56,7 @@ defineEmits(['mulai-belajar'])
           </a>
           <span v-else>🥋 {{ course.practiceCount || 0 }} Latihan</span>
         </div>
-        <span class="shrink-0 text-right font-medium">🎯 {{ course.level }}</span>
+        <span class="shrink-0 text-right font-medium">=✪= {{ course.level }}</span>
       </div>
 
       <!-- Saat diklik, komponen ini memancarkan sinyal (emit) ke bapaknya -->

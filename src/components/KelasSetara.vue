@@ -57,7 +57,7 @@ const categories = [
   'Semua',
   'Software Engineering',
   'Materi SMK',
-  'Quality Assurance'
+  'Quality Assurance',
   'Airport Safety & Operations'
 ]
 
