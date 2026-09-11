@@ -3,6 +3,8 @@ import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { marked } from 'marked'
 import { supabase } from '../supabase.js'
 import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
+import SyllabusSidebar from './SyllabusSidebar.vue'
+import LessonViewer from './LessonViewer.vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { gamtekSyllabusData } from '../data/gamtek.js'
@@ -293,26 +295,26 @@ const mainTabLabel = computed(() => {
 
 // Fungsi untuk mengubah link YouTube standar menjadi link Embed,
 // dan meloloskan URL Google Drive secara langsung
-const getEmbedUrl = (url) => {
-  if (!url) return '';
+// const getEmbedUrl = (url) => {
+//   if (!url) return '';
   
-  // 1. Cek apakah ini link YouTube
-  const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/);
-  if (youtubeMatch) {
-    const videoId = youtubeMatch[1];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
+//   // 1. Cek apakah ini link YouTube
+//   const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/);
+//   if (youtubeMatch) {
+//     const videoId = youtubeMatch[1];
+//     return `https://www.youtube.com/embed/${videoId}`;
+//   }
   
-  // 2. Cek apakah ini link Google Drive
-  if (url.includes('drive.google.com')) {
-    // Kembalikan URL asli, karena Anda sudah memasukkan
-    // URL versi /preview langsung di data.js Anda
-    return url; 
-  }
+//   // 2. Cek apakah ini link Google Drive
+//   if (url.includes('drive.google.com')) {
+//     // Kembalikan URL asli, karena Anda sudah memasukkan
+//     // URL versi /preview langsung di data.js Anda
+//     return url; 
+//   }
 
-  // Fallback untuk URL lainnya
-  return url;
-}
+//   // Fallback untuk URL lainnya
+//   return url;
+// }
 
 // Label tombol aksi dinamis berdasarkan tipe materi
 const completionButtonText = computed(() => {
@@ -589,77 +591,16 @@ const handleLogout = async () => {
 
       <!-- JIKA SILABUS ADA (TAMPILAN NORMAL SEPERTI BIASA) -->
       <template v-else>
-        
-        <!-- Overlay Gelap (Hanya muncul saat drawer mobile terbuka) -->
-        <div 
-          v-show="isDrawerOpen" 
-          @click="isDrawerOpen = false"
-          class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
-          >
-        </div>
       
-        <!-- Sidebar / Silabus (Kiri) -->
-        <aside 
-          :class="[
-            'w-[85vw] sm:w-80 lg:w-96 bg-white/95 md:bg-white/40 backdrop-blur-xl border-r border-slate-200/60 flex flex-col shrink-0 overflow-y-auto',
-            'fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 transition-transform duration-300 ease-in-out',
-            isDrawerOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
-          ]"
-          >
-          <div class="p-5 border-b border-slate-200/60 flex items-center justify-between">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Silabus Pembelajaran</h2>
-          
-            <!-- Tombol Tutup (X) Drawer - Hanya muncul di mobile -->
-            <button @click="isDrawerOpen = false" class="md:hidden text-slate-400 hover:text-red-500 transition-colors p-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        
-          <div class="p-3 flex flex-col gap-2">
-            <!-- Accordion Modul -->
-            <div v-for="mod in syllabus" :key="mod.id" class="mb-2">
-              <button 
-                @click="toggleModule(mod.id)" 
-                class="w-full flex items-center justify-between p-3 bg-white/60 rounded-xl hover:bg-white border border-slate-100 transition-colors text-left"
-                >
-                <span class="font-semibold text-slate-800 text-sm">{{ mod.title }}</span>
-                <svg :class="{'rotate-180': mod.isOpen}" class="w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-            
-              <!-- List TP / Sub-materi -->
-              <div v-show="mod.isOpen" class="mt-2 pl-4 pr-2 flex flex-col gap-1 border-l-2 border-indigo-100 ml-5">
-                <button 
-                  v-for="lesson in mod.lessons" :key="lesson.id"
-                  @click="navigateTo(lesson.id)"
-                  :class="[ 
-                    'flex items-start gap-3 p-2.5 rounded-lg text-left text-sm transition-all',
-                    activeLesson === lesson.id ? 'bg-indigo-50 text-indigo-700 font-medium' : 'hover:bg-slate-100/50 text-slate-600'
-                  ]"
-                  >
-                  <!-- Ikon Status/Tipe -->
-                  <span class="mt-0.5 shrink-0">
-                    <svg v-if="lesson.isCompleted" class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    <span v-else-if="lesson.type === 'theory'" class="text-slate-400">📖</span>
-                    <span v-else-if="lesson.type === 'practice'" class="text-orange-400">⚡</span>
-                    <span v-else-if="lesson.type === 'challenge'" class="text-slate-400">🧗🏼‍♂️</span>
-                    <span v-else-if="lesson.type === 'project'" class="text-indigo-500">🎯</span>
-                  </span>
-                
-                  <div class="flex flex-col">
-                    <span>{{ lesson.title }}</span>
-                    <span class="text-[10px] text-slate-400 mt-1 uppercase">{{ lesson.duration }} • {{ lesson.type }}</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </aside>
+        <!-- Panggil Komponen Sidebar -->
+        <SyllabusSidebar 
+          :syllabus="syllabus"
+          :active-lesson="activeLesson"
+          :is-drawer-open="isDrawerOpen"
+          @close-drawer="isDrawerOpen = false"
+          @toggle-module="toggleModule"
+          @navigate="navigateTo"
+        />
 
         <!-- Area Konten (Kanan) -->
         <main class="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -673,248 +614,21 @@ const handleLogout = async () => {
               <p class="text-slate-500 mt-2">Materi untuk mapel ini sedang dalam tahap penyusunan.</p>
             </div>
 
-            <!-- JIKA ADA MATERI -->
-            <div v-else class="max-w-4xl mx-auto">  
-              
-              <!-- Header Konten Aktif -->
-              <div class="mb-8 pb-6 border-b border-slate-200">
-                <div class="inline-block px-2.5 py-1 mb-3 text-xs font-semibold uppercase tracking-wider text-indigo-700 bg-indigo-100 rounded-lg">
-                  {{ currentLessonData.moduleTitle.split(':')[0] }} • {{ currentLessonData.type }}
-                </div>
-                <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">
-                  {{ currentLessonData.title }}
-                </h2>
-                <p class="text-slate-600 text-lg leading-relaxed">
-                  {{ lessonBrief }}
-                </p>
-              </div>
-
-              <!-- TABS NAVIGATION -->
-              <div class="flex gap-6 border-b border-slate-200 mb-8 mt-2">
-                <!-- Tab 1: Materi -->
-                <button
-                  @click="activeTab = 'materi'"
-                  :class="[
-                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200', 
-                    activeTab === 'materi' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
-                  ]"
-                >
-                  {{ mainTabLabel }}
-                </button>
-                <!-- Tab 2: Media -->
-                <button
-                  @click="activeTab = 'media'"
-                  :class="[
-                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200', 
-                    activeTab === 'media' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
-                  ]"
-                >
-                  🎧 Media & Referensi
-                </button>
-
-                <!-- TAB BARU: Nilai (Hanya muncul untuk kuis/asesmen) -->
-                <button
-                  v-if="['practice', 'challenge', 'sumative'].includes(currentLessonData.type)"
-                  @click="activeTab = 'nilai'"
-                  :class="[
-                    'pb-3 text-sm font-semibold border-b-2 transition-all duration-200 whitespace-nowrap', 
-                    activeTab === 'nilai' ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-700'
-                  ]"
-                >
-                  🏅 Riwayat Nilai
-                </button>
-              </div>
-
-              <!-- TAB 1: MATERI UTAMA (Teks, Slide, PDF) -->
-              <div v-show="activeTab === 'materi'" class="prose prose-slate prose-indigo max-w-none prose-headings:font-bold prose-a:text-indigo-600 prose-pre:bg-slate-900 prose-pre:text-slate-100 prose-pre:rounded-xl">
-                
-                <!-- Tempat Google Slide -->
-                <div v-if="currentLessonData.slideUrl" class="aspect-video w-full mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
-                  <iframe 
-                    class="w-full h-full"
-                    :src="currentLessonData.slideUrl" 
-                    title="Presentasi Materi" 
-                    frameborder="0" login
-                    allowfullscreen="true" 
-                    mozallowfullscreen="true" 
-                    webkitallowfullscreen="true">
-                  </iframe>
-                </div>
-
-                <!-- Tempat Modul PDF -->
-                <div v-if="currentLessonData.pdfUrl" class="w-full min-h-[600px] mb-8 rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200">
-                  <iframe 
-                    class="w-full h-full min-h-[600px]"
-                    :src="currentLessonData.pdfUrl" 
-                    title="Modul Pembelajaran PDF" 
-                    frameborder="0" 
-                    allow="autoplay"
-                    allowfullscreen>
-                  </iframe>
-                </div>
-
-                <!-- Tempat Kuis Interaktif HTML (Otomatis muncul jika practiceUrl tersedia) -->
-                <div v-if="currentLessonData.practiceUrl" class="w-full min-h-[650px] mb-8 rounded-2xl overflow-hidden shadow-sm border border-slate-200">
-                  <iframe 
-                    class="w-full h-full min-h-[650px]"
-                    :src="currentLessonData.practiceUrl" 
-                    title="Kuis Interaktif" 
-                    frameborder="0" 
-                    allowfullscreen>
-                  </iframe>
-                </div>
-
-                <!-- Konten Teks / HTML -->
-                <div v-if="isLoadingContent" class="py-10 text-center text-slate-500 animate-pulse">
-                  Memuat materi teks...
-                </div>
-                <div v-else v-html="renderedContent"></div>
-              </div>
-
-              <!-- TAB 2: MEDIA & REFERENSI (Video Ori & Eksternal) -->
-              <div v-show="activeTab === 'media'" class="space-y-10">
-                
-                <!-- Segmen 1: Video Instruktur (Ori) -->
-                <div v-if="currentLessonData.videoUrl">
-                  <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <span class="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">👨‍🏫</span> 
-                    Penjelasan Instruktur
-                  </h3>
-                  <!-- Menambahkan min-h-[260px] untuk mobile, dan min-h-[320px] untuk layar yang sedikit lebih besar -->
-                  <div class="aspect-video w-full min-h-[260px] sm:min-h-[320px] rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200 relative">
-                    <iframe 
-                      class="w-full h-full"
-                      :src="getEmbedUrl(currentLessonData.videoUrl)" 
-                      title="Video Materi Pembelajaran" 
-                      frameborder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                      allowfullscreen>
-                    </iframe>
-                  </div>
-                  <!-- Tombol Alternatif Buka Video (Khusus Mobile) -->
-                  <div v-if="currentLessonData.videoUrl.includes('drive.google.com')" class="mt-3 block sm:hidden">
-                    <a 
-                      :href="currentLessonData.videoUrl" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      class="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-slate-100 text-slate-700 text-sm font-medium rounded-xl border border-slate-200 hover:bg-slate-200 active:bg-slate-300 transition-colors"
-                      >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                      Buka Video Penuh
-                    </a>
-                  </div>
-                </div>
-
-                <!-- Segmen 2: Referensi Eksternal -->
-                <div v-if="currentLessonData.externalVideoUrl || validExternalLinks.length > 0">
-                  <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2 pt-6 border-t border-slate-200">
-                    <span class="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">💡</span> 
-                    Pengayaan & Referensi Luar
-                  </h3>
-                  
-                  <!-- Video Eksternal (Misal: YouTube channel lain) -->
-                  <div v-if="currentLessonData.externalVideoUrl" class="aspect-video w-full mb-6 rounded-2xl overflow-hidden shadow-sm bg-slate-900 border border-slate-200">
-                    <iframe 
-                      class="w-full h-full"
-                      :src="getEmbedUrl(currentLessonData.externalVideoUrl)" 
-                      title="Video Referensi Eksternal" 
-                      frameborder="0" 
-                      allowfullscreen>
-                    </iframe>
-                  </div>
-
-                  <!-- Daftar Link/Makalah Eksternal (Hanya melooping yang valid) -->
-                  <ul v-if="validExternalLinks.length > 0" class="space-y-3">
-                    <li v-for="(link, index) in validExternalLinks" :key="index">
-                      <a :href="link.url" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-hover:text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                        </svg>
-                        <div>
-                          <p class="text-sm font-semibold text-slate-700 group-hover:text-indigo-700 m-0">
-                            {{ link.title || 'Tautan Referensi' }}
-                          </p>
-                          <p class="text-xs text-slate-500 m-0 mt-0.5">
-                            {{ link.type || 'Tautan Eksternal' }}
-                          </p>
-                        </div>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Fallback jika tab media BENAR-BENAR KOSONG / hanya berisi null -->
-                <div v-if="!hasMediaContent" class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
-                  <span class="text-4xl block mb-3">📭</span>
-                  <p class="text-slate-500 font-medium">Belum ada media audio/visual untuk sesi ini.</p>
-                  <p class="text-sm text-slate-400 mt-1">Silakan fokus pada tab Materi Utama.</p>
-                </div>
-
-              </div>
-
-              <!-- TAB 3: RIWAYAT NILAI -->
-              <div v-show="activeTab === 'nilai'" class="space-y-6">
-                
-                <div v-if="currentLessonScores.length > 0">
-                  <!-- Banner Status Akhir -->
-                  <div :class="[
-                    'p-5 rounded-2xl border flex items-center justify-between mb-8',
-                    highestScore >= 75 ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'
-                  ]">
-                    <div>
-                      <p class="text-sm font-medium text-slate-600 mb-1">Status Pencapaian Akhir</p>
-                      <h3 :class="['text-xl font-bold', highestScore >= 75 ? 'text-emerald-700' : 'text-rose-700']">
-                        {{ highestScore >= 75 ? '🎉 TUNTAS (KOMPETEN)' : '⚠️ BELUM TUNTAS' }}
-                      </h3>
-                    </div>
-                    <div class="text-right">
-                      <p class="text-sm font-medium text-slate-600 mb-1">Nilai Tertinggi</p>
-                      <p class="text-3xl font-black text-slate-900">{{ highestScore }}</p>
-                    </div>
-                  </div>
-
-                  <!-- Tabel Riwayat -->
-                  <h4 class="text-lg font-bold text-slate-900 mb-4">Riwayat Percobaan</h4>
-                  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                    <table class="w-full text-left text-sm text-slate-600">
-                      <thead class="bg-slate-50 border-b border-slate-200 text-slate-700">
-                        <tr>
-                          <th class="px-4 py-3 font-semibold">Percobaan Ke-</th>
-                          <th class="px-4 py-3 font-semibold">Tanggal & Waktu</th>
-                          <th class="px-4 py-3 font-semibold">Skor</th>
-                          <th class="px-4 py-3 font-semibold">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody class="divide-y divide-slate-100">
-                        <tr v-for="(attempt, index) in currentLessonScores" :key="index" class="hover:bg-slate-50/50">
-                          <td class="px-4 py-3 font-medium text-slate-900">#{{ index + 1 }}</td>
-                          <td class="px-4 py-3">{{ new Date(attempt.date).toLocaleString('id-ID') }}</td>
-                          <td class="px-4 py-3 font-bold text-slate-700">{{ attempt.score }}</td>
-                          <td class="px-4 py-3">
-                            <span :class="[
-                              'px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-md',
-                              attempt.isPassed ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
-                            ]">
-                              {{ attempt.isPassed ? 'Lulus' : 'Remedial' }}
-                            </span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <!-- Kondisi jika belum ada nilai -->
-                <div v-else class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
-                  <span class="text-4xl block mb-3">📝</span>
-                  <p class="text-slate-600 font-bold">Belum Ada Nilai</p>
-                  <p class="text-sm text-slate-500 mt-1">Kamu belum pernah menyelesaikan kuis/asesmen ini. Kerjakan sekarang di tab Materi Utama!</p>
-                </div>
-
-              </div>
-            </div>
+            <!-- Panggil Komponen Viewer -->
+            <LessonViewer 
+              v-else
+              :lesson="currentLessonData"
+              :brief="lessonBrief"
+              :tab-label="mainTabLabel"
+              :has-media="hasMediaContent"
+              :external-links="validExternalLinks"
+              :rendered-html="renderedContent"
+              :is-loading="isLoadingContent"
+              :scores="currentLessonScores"
+              :best-score="highestScore"
+              :active-tab="activeTab"
+              @change-tab="activeTab = $event"
+            />
           </div>
 
           <!-- FIXED BOTTOM BAR (Navigasi Selalu di Bawah) -->

@@ -15,6 +15,19 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     vue(),
+    {
+      // Plugin kustom ringan untuk mengatur SPA Fallback
+      name: 'kelas-setara-spa-fallback',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Jika URL diawali /kelas-setara/ DAN yang diminta adalah halaman HTML
+          if (req.url.startsWith('/kelas-setara/') && req.headers.accept?.includes('text/html')) {
+            req.url = '/kelas-setara/index.html' // Belokkan ke Vue Index
+          }
+          next()
+        })
+      }
+    }
   ],
   build: {
     rollupOptions: {
