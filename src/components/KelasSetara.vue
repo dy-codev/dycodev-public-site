@@ -58,6 +58,7 @@ const categories = [
   'Software Engineering',
   'Materi SMK',
   'Quality Assurance'
+  'Airport Safety & Operations'
 ]
 
 const selectedCategory = ref('Semua')
