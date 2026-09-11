@@ -17,22 +17,22 @@ Berikut ini adalah sistem operasi yang sangat terkenal dan sering digunakan:
 
 ### a. Windows
 
-![Tiga Sistem Operasi Populer di Dunia](/materi/informatika/w11.png)
+![Tiga Sistem Operasi Populer di Dunia](./images/w11.png)
 
 Windows adalah sebuah sistem operasi yang sangat terkenal dan paling banyak digunakan terutama bagi pengguna di Indonesia. Banyak perusahaan, institusi, organisasi, maupun pribadi yang memilih Windows dengan alasan karena terbiasa dan mudah digunakan. Perkembangan Windows sendiri dari waktu ke waktu cukup signifikan, beberapa versi Windows terbaru mampu memberikan pelayanan yang baik bagi penggunanya, namun perlu diketahui bahwa Windows ini berbayar. Meskipun dengan fasilitas yang baik namun banyak orang yang berasumsi bahwa harga lisensi Windows cukup mahal. Ini yang menyebabkan maraknya Windows bajakan yang bisa diunduh di situs-situs website.
 
 ### b. Linux
-![Tiga Sistem Operasi Populer di Dunia](/materi/informatika/ubuntu.png)
+![Tiga Sistem Operasi Populer di Dunia](./images/ubuntu.png)
 
 Sistem operasi Linux adalah sebuah sistem operasi yang bersifat open source atau gratis. Dalam hal ini, pengembangan Linux dapat dilakukan secara bebas dan dapat didistribusikan tanpa memerlukan lisensi apapun. Menjadi keunggulan pada Linux karena mampu menjadi alternatif untuk digunakan selain sistem operasi Windows yang begitu mahal dan tidak rentan akan serangan-serangan virus. Beberapa jenis Linux yang terkenal dan sering digunakan adalah Debian GNU/Linux, Ubuntu, Linux Mint, Red Hat Enterprise Linux, Fedora, dan Arch Linux.
 
 ### c. macOS
 
-![Tiga Sistem Operasi Populer di Dunia](/materi/informatika/macos.png)
+![Tiga Sistem Operasi Populer di Dunia](./images/macos.png)
 
 macOS adalah salah satu produk sistem operasi yang dikembangkan oleh Apple Inc. di mana pada sistem operasi ini memiliki antarmuka secara grafis yang sangat baik dan cepat. Sistem operasi ini biasanya sudah tertanam pada produk laptop atau notebook perusahaan Apple, yaitu MacBook. Sistem operasi macOS menggunakan kernel BSD sehingga pengguna OS ini tertarik dengan keindahan tampilannya bahkan menjadikannya panutan bagi pengembang pada sistem operasi lain.
 
-![Tiga Sistem Operasi Populer di Dunia](/materi/informatika/three-os.png)
+![Tiga Sistem Operasi Populer di Dunia](./images/three-os.png)
 
 ## 2. Aplikasi Penjelajah Internet
 Berikut beberapa aplikasi penjelajah internet yang bisa kalian gunakan:
@@ -72,7 +72,7 @@ Berikut beberapa aplikasi penjelajah internet yang bisa kalian gunakan:
             <div class="bg-white rounded-2xl p-7 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div class="flex items-center gap-5 mb-5">
                     <div class="w-16 h-16 flex-shrink-0 bg-slate-50 rounded-xl flex items-center justify-center p-2 border border-slate-100">
-                        <img src="/materi/informatika/Safari.png" alt="Logo Safari" class="w-full h-full object-contain">
+                        <img src="./images/safari.png" alt="Logo Safari" class="w-full h-full object-contain">
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800">c. Safari</h3>
                 </div>
@@ -84,7 +84,7 @@ Berikut beberapa aplikasi penjelajah internet yang bisa kalian gunakan:
             <div class="bg-white rounded-2xl p-7 shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div class="flex items-center gap-5 mb-5">
                     <div class="w-16 h-16 flex-shrink-0 bg-slate-50 rounded-xl flex items-center justify-center p-2 border border-slate-100">
-                        <img src="/materi/informatika/Firefox.png" alt="Logo Safari" class="w-full h-full object-contain">
+                        <img src="./images/firefox.png" alt="Logo Safari" class="w-full h-full object-contain">
                     </div>
                     <h3 class="text-2xl font-bold text-slate-800">c. Mozilla FireFox</h3>
                 </div>
@@ -106,7 +106,7 @@ Aplikasi persuratan adalah aplikasi yang berfungsi untuk membantu kalian mengiri
   <!-- Item: Google Gmail -->
   <div class="flex flex-col sm:flex-row items-start gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
     <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100">
-      <img src="/materi/informatika/Gmail.png" alt="Logo Gmail" class="w-full h-full object-contain">
+      <img src="./images/gmail.png" alt="Logo Gmail" class="w-full h-full object-contain">
     </div>
     <div>
       <h3 class="text-xl font-bold text-gray-800 mb-2">a. Google Gmail</h3>
@@ -120,7 +120,7 @@ Aplikasi persuratan adalah aplikasi yang berfungsi untuk membantu kalian mengiri
   <div class="flex flex-col sm:flex-row items-start gap-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
     <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100">
       <!-- Menggunakan logo Yahoo yang umum karena spesifik Yahoo Mail sering berubah -->
-      <img src="/materi/informatika/Yahoo.png" alt="Logo Yahoo" class="w-full h-full object-contain">
+      <img src="./images/yahoo.png" alt="Logo Yahoo" class="w-full h-full object-contain">
     </div>
     <div>
       <h3 class="text-xl font-bold text-gray-800 mb-2">b. Yahoo! Mail</h3>

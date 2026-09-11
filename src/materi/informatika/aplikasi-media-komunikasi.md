@@ -22,7 +22,7 @@ Komunikasi yang terjadi secara bersamaan pada waktu yang sama. Pengirim dan pene
 Komunikasi yang tidak terjadi secara bersamaan. Pesan dikirimkan oleh pengirim dan dapat dibaca serta dibalas pada waktu yang berbeda oleh penerima.
 * *Contoh:* Surat Elektronik (Email), Forum Diskusi, dan Sistem Tiket (*Helpdesk*).
 
-![Infografis Sinkron vs Asinkron](/materi/informatika/infografis-sinkron-vs-asinkron.jpeg)
+![Infografis Sinkron vs Asinkron](./images/infografis-sinkron-vs-asinkron.jpeg)
 
 ---
 
