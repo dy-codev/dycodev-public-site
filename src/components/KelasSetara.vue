@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { currentUser, initAuth, loginWithNisn, loginWithEmail, logout, getDisplayName } from '../composables/useAuth.js'
+import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
+import CourseCard from './CourseCard.vue'
+import AuthModal from './AuthModal.vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { backendSyllabusData } from '../data/backend.js'
@@ -9,10 +11,6 @@ import { gamtekSyllabusData } from '../data/gamtek.js'
 
 // --- State Auth & Modal ---
 const isLoginModalOpen = ref(false)
-const loginMode = ref('nisn') // Default tab: 'nisn' atau 'email'
-const loginForm = ref({ nisn: '', email: '', password: '' })
-const loginError = ref('')
-const isLoggingIn = ref(false)
 const selectedCourse = ref(null) // Menyimpan course apa yang sedang diklik
 
 const router = useRouter()
@@ -40,58 +38,18 @@ const handleMulaiBelajar = (course) => {
   } else {
     // Jika belum login, buka modal spesifik untuk course ini
     selectedCourse.value = course;
-    loginForm.value = { nisn: '', email: '', password: '' };
-    loginError.value = '';
-    
-    if (course.tag === 'SPBN Bekasi') {
-      loginMode.value = 'nisn';
-    }
-    
     isLoginModalOpen.value = true;
-  }
-}
-
-// --- FUNGSI PROSES LOGIN ---
-const handleLogin = async () => {
-  loginError.value = ''
-  isLoggingIn.value = true
-  
-  try {
-    if (loginMode.value === 'nisn') {
-      await loginWithNisn(loginForm.value.nisn, loginForm.value.password)
-    } else {
-      await loginWithEmail(loginForm.value.email, loginForm.value.password)
-    }
-    
-    // Jika sukses, tutup modal dan lanjutkan perjalanan ke materi!
-    isLoginModalOpen.value = false
-    // window.location.href = selectedCourse.value.link
-    router.push(selectedCourse.value.link)
-    
-  } catch (error) {
-    loginError.value = 'Kredensial tidak valid. Periksa kembali data Anda.'
-  } finally {
-    isLoggingIn.value = false
   }
 }
 
 // --- FUNGSI PEMBUKA MODAL DARI HEADER (UMUM) ---
 const openGeneralLogin = () => {
-  selectedCourse.value = null; // Kosongkan selectedCourse agar modal tahu ini mode umum
-  loginForm.value = { nisn: '', email: '', password: '' };
-  loginError.value = '';
-  loginMode.value = 'nisn'; // Default tab
-  isLoginModalOpen.value = true;
-}
-
-// --- FUNGSI GUEST ---
-const continueAsGuest = () => {
-  isLoginModalOpen.value = false
-  // Pastikan selectedCourse ada sebelum memanggil .link
-  if (selectedCourse.value) {
-    // window.location.href = selectedCourse.value.link;
-    router.push(selectedCourse.value.link)
-  }
+  // 1. Beritahu modal bahwa ini login umum (bukan dari kartu mapel)
+  selectedCourse.value = null; 
+  
+  // 2. Perintahkan modal untuk buka dirinya.
+  // (Saat ini terjadi, watch di AuthModal akan otomatis membersihkan form)
+  isLoginModalOpen.value = true; 
 }
 
 // Data Kategori
@@ -273,159 +231,20 @@ const displayCourses = computed(() => {
 
       <!-- Course Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="course in displayCourses"
-          :key="course.id"
-          class="group relative bg-white/70 backdrop-blur-md border border-white/80 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
-          >
-          <div>
-            <!-- Header Kartu -->
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-3xl p-3 bg-indigo-50/80 rounded-xl border border-indigo-100/50">
-                {{ course.icon }}
-              </span>
-              <span class="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 border border-slate-200/50">
-                {{ course.tag }}
-              </span>
-            </div>
-
-            <!-- Judul & Deskripsi -->
-            <h2 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
-              {{ course.title }}
-            </h2>
-            <p class="text-sm text-slate-600 leading-relaxed mb-6">
-              {{ course.description }}
-            </p>
-          </div>
-
-          <!-- Footer Kartu (Perbaikan Tata Letak) -->
-          <div>
-            <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-4 mb-4">
-              
-              <!-- Bungkus Modul & Latihan di dalam satu div agar rata kiri bersamaan -->
-              <div class="flex items-center gap-4">
-                <span>📚 {{ course.lessonsCount || 0 }} Modul</span>
-                <!-- Hilangkan a tag jika practiceLink '#' agar tidak terlihat seperti link patah -->
-                <a v-if="course.practiceLink !== '#'"
-                    :href="course.practiceLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="hover:text-indigo-600 transition-colors"
-                  >
-                  <span>🥋 {{ course.practiceCount || 0 }} Latihan</span>
-                </a>
-                <span v-else>🥋 {{ course.practiceCount || 0 }} Latihan</span>
-              </div>
-
-              <!-- Level otomatis terdorong ke paling kanan karena justify-between -->
-              <span class="shrink-0 text-right font-medium">🎯 {{ course.level }}</span>
-            </div>
-
-            <button 
-              @click="handleMulaiBelajar(course)"
-              class="w-full py-2.5 px-4 bg-slate-900 hover:bg-indigo-600 text-white font-medium text-sm rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
-              >
-              Mulai Belajar
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <CourseCard 
+          v-for="course in displayCourses" 
+          :key="course.id" 
+          :course="course"
+          @mulai-belajar="handleMulaiBelajar"
+          />
       </div>
     </div>
   </section>
   
   <!-- SMART MODAL LOGIN -->
-  <div v-if="isLoginModalOpen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-xl w-full max-w-sm overflow-hidden relative border border-slate-200">
-    
-      <button @click="isLoginModalOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 p-1 rounded-full z-10">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-      </button>
-    
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-slate-900 text-center mb-2">Akses Kelas</h3>
-      
-        <!-- Label Materi (Hanya muncul jika mengklik dari kartu materi) -->
-        <p v-if="selectedCourse" class="text-xs text-center text-slate-500 mb-6">
-          Materi: <span class="font-bold text-indigo-600">{{ selectedCourse.title }}</span>
-        </p>
-        <p v-else class="text-xs text-center text-slate-500 mb-6">
-          Masuk untuk menyimpan riwayat belajarmu
-        </p>
-
-        <!-- TAB SWITCHER (Sembunyikan jika materi yang diklik adalah SPBN) -->
-        <div v-if="!selectedCourse || selectedCourse.tag !== 'SPBN Bekasi'" class="flex bg-slate-100 p-1 rounded-xl mb-6">
-          <button 
-            @click="loginMode = 'nisn'"
-            :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'nisn' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-            >
-            Siswa SPBN
-          </button>
-          <button 
-            @click="loginMode = 'email'"
-            :class="['flex-1 py-1.5 text-sm font-semibold rounded-lg transition-colors', loginMode === 'email' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700']"
-            >
-            Umum / Publik
-          </button>
-        </div>
-      
-        <!-- PESAN ERROR -->
-        <div v-if="loginError" class="mb-4 p-3 bg-red-50 text-red-600 text-xs font-medium rounded-lg border border-red-100 flex items-start gap-2">
-          <span>⚠️</span> {{ loginError }}
-        </div>
-
-        <form @submit.prevent="handleLogin" class="space-y-4">
-        
-          <!-- FORM NISN -->
-          <div v-if="loginMode === 'nisn'">
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Nomor Induk (NISN)</label>
-            <input v-model="loginForm.nisn" type="text" placeholder="Contoh: 1001" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-          </div>
-
-          <!-- FORM EMAIL -->
-          <div v-if="loginMode === 'email'">
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Alamat Email</label>
-            <input v-model="loginForm.email" type="email" placeholder="nama@email.com" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-          </div>
-
-          <!-- PASSWORD UMUM -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Password</label>
-            <input v-model="loginForm.password" type="password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors">
-          </div>
-
-          <button type="submit" :disabled="isLoggingIn" class="w-full mt-2 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            {{ isLoggingIn ? 'Memverifikasi...' : 'Masuk' }}
-          </button>
-        </form>
-      </div>
-
-      <!-- AREA FOOTER MODAL (KONDISIONAL) -->
-    
-      <!-- 1. Jika diklik dari materi Publik -->
-      <div v-if="selectedCourse && selectedCourse.tag !== 'SPBN Bekasi'" class="bg-slate-50 p-4 border-t border-slate-100 text-center">
-        <p class="text-xs text-slate-500 mb-3">Tidak ingin menyimpan progress?</p>
-        <button @click="continueAsGuest" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
-          Lewati, Masuk sebagai Guest
-        </button>
-      </div>
-
-      <!-- 2. Jika diklik dari materi SPBN -->
-      <div v-else-if="selectedCourse && selectedCourse.tag === 'SPBN Bekasi'" class="bg-indigo-50 p-4 border-t border-indigo-100 text-center">
-        <p class="text-[11px] text-indigo-700 font-medium leading-tight m-0">
-          Materi ini bersifat privat untuk siswa <br>SMK Penerbangan Bakti Nusantara.
-        </p>
-      </div>
-
-      <!-- 3. Jika diklik dari tombol Header (Bebas Eksplorasi) -->
-      <div v-else class="bg-slate-50 p-4 border-t border-slate-100 text-center">
-        <p class="text-xs text-slate-500 mb-3">Belum punya akun?</p>
-        <button @click="isLoginModalOpen = false" class="w-full py-2.5 bg-white border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors">
-          Eksplorasi Kelas Setara sebagai Guest
-        </button>
-      </div>
-    </div>
-  </div>
+  <AuthModal 
+    :is-open="isLoginModalOpen" 
+    :course="selectedCourse" 
+    @close="isLoginModalOpen = false" 
+  />
 </template>
