@@ -4,11 +4,15 @@ import { supabase } from '../supabase.js'
 import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
 import SyllabusSidebar from './SyllabusSidebar.vue'
 import LessonViewer from './LessonViewer.vue'
+import ChangePasswordModal from './ChangePasswordModal.vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { gamtekSyllabusData } from '../data/gamtek.js'
 import { backendSyllabusData } from '../data/backend.js'
 // Nanti jika ada webdev: import { webdevSyllabusData } from '../data/webdev.js'
+
+const isUserMenuOpen = ref(false)
+const isChangePasswordOpen = ref(false)
 
 // 1. Baca parameter 'subject' dari URL (misal: ?subject=backend)
 const urlParams = new URLSearchParams(window.location.search)
@@ -558,12 +562,34 @@ const handleLogout = async () => {
         <!-- Profil User / Logout -->
         <div class="h-6 w-px bg-slate-200 hidden md:block"></div> <!-- Pemisah Vertikal -->
     
-        <div v-if="currentUser" class="flex items-center gap-3">
-          <div class="flex items-center gap-2 text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-            <span>👤</span>
-            <span class="hidden sm:inline">{{ getDisplayName() }}</span>
+        <div v-if="currentUser" class="flex items-center gap-3 relative">
+          
+          <div class="flex items-center text-sm font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-lg overflow-hidden relative z-20">
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-100">
+              <span>👤</span>
+              <span class="hidden sm:inline">{{ getDisplayName() }}</span>
+            </div>
+            
+            <div class="h-full w-px bg-slate-200"></div>
+            
+            <button @click="isUserMenuOpen = !isUserMenuOpen" class="px-2.5 py-1.5 bg-slate-50 hover:bg-white transition-colors text-slate-500 hover:text-indigo-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
           </div>
-          <button @click="handleLogout" title="Keluar" class="text-sm p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+
+          <div v-if="isUserMenuOpen" @click="isUserMenuOpen = false" class="fixed inset-0 z-10"></div>
+
+          <div v-show="isUserMenuOpen" class="absolute top-full mt-2 right-[45px] w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1.5 z-30">
+            <button @click="isChangePasswordOpen = true; isUserMenuOpen = false" class="w-full text-left px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+              Ganti Password
+            </button>
+          </div>
+
+          <button @click="handleLogout" title="Keluar" class="text-sm p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 relative z-20">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
@@ -688,6 +714,12 @@ const handleLogout = async () => {
       </template>
 
     </div>
+    
+    <!-- Modal Ganti Password -->
+    <ChangePasswordModal 
+      :is-open="isChangePasswordOpen" 
+      @close="isChangePasswordOpen = false" 
+    />
   </div>
 </template>
 

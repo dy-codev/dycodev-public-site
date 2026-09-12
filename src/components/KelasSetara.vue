@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { currentUser, initAuth, logout, getDisplayName } from '../composables/useAuth.js'
 import CourseCard from './CourseCard.vue'
 import AuthModal from './AuthModal.vue'
+import ChangePasswordModal from './ChangePasswordModal.vue'
 // Import data silabus master
 import { informatikaSyllabusData } from '../data/informatika.js'
 import { backendSyllabusData } from '../data/backend.js'
@@ -12,6 +13,8 @@ import { gamtekSyllabusData } from '../data/gamtek.js'
 // --- State Auth & Modal ---
 const isLoginModalOpen = ref(false)
 const selectedCourse = ref(null) // Menyimpan course apa yang sedang diklik
+const isUserMenuOpen = ref(false)
+const isChangePasswordOpen = ref(false)
 
 const router = useRouter()
 
@@ -210,14 +213,48 @@ const displayCourses = computed(() => {
             </button>
 
             <!-- Jika Sudah Login -->
-            <div v-else class="flex items-center gap-3">
-              <div class="flex items-center gap-2 text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-xl">
-                <span>👤</span>
-                <span>{{ getDisplayName() }}</span>
+            <div v-else class="flex items-center gap-3 relative">
+              
+              <!-- Wrapper Info User & Gear -->
+              <div class="flex items-center text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden relative z-20">
+                <!-- Info Display Name -->
+                <div class="flex items-center gap-2 px-4 py-2 bg-white">
+                  <span>👤</span>
+                  <span>{{ getDisplayName() }}</span>
+                </div>
+                
+                <!-- Separator Vertikal -->
+                <div class="h-full w-px bg-slate-200"></div>
+                
+                <!-- Tombol Gear -->
+                <button 
+                  @click="isUserMenuOpen = !isUserMenuOpen" 
+                  class="px-3 py-2 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-500 hover:text-indigo-600"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
               </div>
+
+              <!-- Overlay Transparan untuk menutup dropdown saat klik di luar -->
+              <div v-if="isUserMenuOpen" @click="isUserMenuOpen = false" class="fixed inset-0 z-10"></div>
+
+              <!-- Dropdown Menu -->
+              <div v-show="isUserMenuOpen" class="absolute top-full mt-2 right-[90px] w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-30">
+                <button 
+                  @click="isChangePasswordOpen = true; isUserMenuOpen = false" 
+                  class="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                  Ganti Password
+                </button>
+              </div>
+
               <button 
                 @click="logout" 
-                class="text-sm font-medium px-4 py-2 text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors"
+                class="text-sm font-medium px-4 py-2 text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors relative z-20"
                 >
                 Logout
               </button>
@@ -260,5 +297,9 @@ const displayCourses = computed(() => {
     :is-open="isLoginModalOpen" 
     :course="selectedCourse" 
     @close="isLoginModalOpen = false" 
+  />
+  <ChangePasswordModal 
+    :is-open="isChangePasswordOpen" 
+    @close="isChangePasswordOpen = false" 
   />
 </template>
